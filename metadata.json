@@ -1,0 +1,8 @@
+{
+  "name": "EarthLife Co.",
+  "description": "Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

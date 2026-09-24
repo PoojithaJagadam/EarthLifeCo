@@ -1,0 +1,985 @@
+/* EarthLife Co. Account Styling - Matching Official Mockups */
+
+/* PAGE CONTAINERS */
+.account-page-wrapper {
+  min-height: 80vh;
+  padding: 3rem 0 5rem 0;
+  background-color: #F8F6F0;
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+.account-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* BREADCRUMBS */
+.account-breadcrumbs {
+  font-size: 0.875rem;
+  color: #6B7280;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-breadcrumbs a {
+  color: #4B5563;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.account-breadcrumbs a:hover {
+  color: #1E3A2B;
+}
+
+.account-breadcrumbs span.current {
+  color: #1E3A2B;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   GUEST AUTH / SIGN IN & REGISTER (IMAGE 1)
+   ========================================================================== */
+.account-auth-container {
+  display: block;
+  width: 100%;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #EBE7DF;
+}
+
+.auth-form-column {
+  padding: 3.5rem 3.5rem 3rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.auth-header {
+  margin-bottom: 2rem;
+}
+
+.auth-title {
+  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1E3A2B;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.auth-subtitle {
+  color: #6B7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* FORM FIELDS */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.auth-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.auth-label .required {
+  color: #EF4444;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-icon {
+  position: absolute;
+  left: 14px;
+  color: #9CA3AF;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.75rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1F2937;
+  background-color: #FFFFFF;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.auth-input:focus {
+  border-color: #1E3A2B;
+  box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.12);
+}
+
+.auth-phone-row {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 0.5rem;
+}
+
+.auth-select-country {
+  padding: 0.85rem 0.5rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  font-size: 0.95rem;
+  color: #1F2937;
+  outline: none;
+  cursor: pointer;
+}
+
+.auth-checkbox-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #4B5563;
+  margin-top: -0.25rem;
+}
+
+.auth-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #1E3A2B;
+  cursor: pointer;
+}
+
+.auth-link {
+  color: #1E3A2B;
+  text-decoration: none;
+  font-weight: 500;
+  transition: text-decoration 0.15s ease;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.95rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.auth-submit-btn:hover {
+  background-color: #2D5540;
+}
+
+.auth-submit-btn:active {
+  transform: translateY(1px);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 0.85rem;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.auth-divider span {
+  padding: 0 0.75rem;
+}
+
+.auth-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-social-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #374151;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-social-btn:hover {
+  background-color: #F9FAFB;
+  border-color: #9CA3AF;
+}
+
+.auth-footer-toggle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-top: 1.5rem;
+}
+
+.auth-toggle-btn {
+  background: none;
+  border: none;
+  color: #1E3A2B;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+/* ==========================================================================
+   AUTHENTICATED DASHBOARD (IMAGE 2)
+   ========================================================================== */
+.account-dashboard-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* SIDEBAR */
+.account-sidebar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.account-sidebar-nav {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 0.75rem 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #EBE7DF;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.75rem;
+  color: #4B5563;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-left: 4px solid transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-nav-btn:hover {
+  background-color: #F8F6F0;
+  color: #1E3A2B;
+}
+
+.account-nav-btn.active {
+  background-color: #EBF3EC;
+  color: #1E3A2B;
+  border-left-color: #1E3A2B;
+  font-weight: 600;
+}
+
+.account-nav-btn.logout {
+  border-top: 1px solid #F3F4F6;
+  margin-top: 0.5rem;
+  color: #4B5563;
+}
+
+.account-nav-btn.logout:hover {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border-left-color: #DC2626;
+}
+
+.sidebar-promo-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #EBE7DF;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sidebar-promo-leaf {
+  color: #1E3A2B;
+  flex-shrink: 0;
+}
+
+.sidebar-promo-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.85rem;
+  color: #1E3A2B;
+  line-height: 1.1;
+}
+
+/* MAIN DASHBOARD CONTENT CARD */
+.account-main-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #EBE7DF;
+  position: relative;
+  min-height: 550px;
+}
+
+.account-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.account-card-title-group {
+  max-width: 60%;
+}
+
+.account-card-title {
+  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1E3A2B;
+  margin: 0 0 0.5rem 0;
+}
+
+.account-card-subtitle {
+  color: #6B7280;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.account-card-script-accent {
+  font-family: 'Caveat', cursive;
+  font-size: 2.25rem;
+  color: #1E3A2B;
+  line-height: 1.1;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ACCOUNT DETAILS FORM */
+.account-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-label .required {
+  color: #EF4444;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1F2937;
+  outline: none;
+  background-color: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: #1E3A2B;
+  box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.12);
+}
+
+.form-input-with-icon {
+  position: relative;
+}
+
+.form-input-with-icon .input-icon-right {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.phone-input-group {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 0.5rem;
+}
+
+.phone-country-code {
+  padding: 0.85rem 0.5rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1F2937;
+  background-color: #FFFFFF;
+  outline: none;
+  cursor: pointer;
+}
+
+.account-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.account-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  color: #4B5563;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.account-checkbox-label input[type="checkbox"] {
+  margin-top: 0.2rem;
+  accent-color: #1E3A2B;
+  width: 16px;
+  height: 16px;
+}
+
+.unsupported-field-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #F3F4F6;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin-top: 0.25rem;
+}
+
+.account-save-btn {
+  width: 100%;
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+}
+
+.account-save-btn:hover {
+  background-color: #2D5540;
+}
+
+/* SAVED ADDRESSES SECTION */
+.add-address-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-address-top-btn:hover {
+  background-color: #2D5540;
+}
+
+.saved-addresses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.address-card {
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 1.25rem;
+  background-color: #FFFFFF;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.address-card:hover {
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.address-card-icon {
+  color: #1E3A2B;
+  margin-top: 0.2rem;
+}
+
+.address-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.address-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.badge-default {
+  background-color: #10B981;
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.badge-secondary {
+  background-color: #F3F4F6;
+  color: #4B5563;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+}
+
+.address-card-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #111827;
+  margin: 0;
+}
+
+.address-card-text {
+  font-size: 0.95rem;
+  color: #4B5563;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.address-card-phone {
+  font-size: 0.95rem;
+  color: #4B5563;
+  margin-top: 0.25rem;
+}
+
+.address-card-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.set-default-btn {
+  background-color: #FFFFFF;
+  border: 1px solid #1E3A2B;
+  color: #1E3A2B;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.set-default-btn:hover {
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+}
+
+.address-action-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.addr-link-btn {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.addr-link-btn.edit {
+  color: #374151;
+}
+
+.addr-link-btn.edit:hover {
+  color: #1E3A2B;
+  text-decoration: underline;
+}
+
+.addr-link-btn.remove {
+  color: #EF4444;
+}
+
+.addr-link-btn.remove:hover {
+  color: #DC2626;
+  text-decoration: underline;
+}
+
+/* EMPTY STATE */
+.account-empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #6B7280;
+}
+
+.account-empty-icon {
+  color: #9CA3AF;
+  margin-bottom: 1rem;
+}
+
+.account-empty-state h3 {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 1.25rem;
+  color: #1E3A2B;
+  margin: 0 0 0.5rem 0;
+}
+
+.account-empty-state p {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ECWID INTEGRATION BRIDGE CONTAINER */
+.ecwid-account-embedded {
+  margin-top: 1.5rem;
+}
+
+.ecwid-orders-wrapper {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+}
+
+/* Base styling for Ecwid order cards */
+.ecwid-orders-wrapper .ec-cart__order,
+.ecwid-orders-wrapper .ec-customer-portal-order {
+  border: 1px solid #E5E7EB !important;
+  border-radius: 12px !important;
+  background-color: #FFFFFF !important;
+  margin-bottom: 1.5rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* FIX 1: Collapsed State - Keep header and compact item preview, hide expanded details */
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-confirmation__section,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-cart-order__summary,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-confirmation__shipping,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-confirmation__tracking,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-confirmation__footer,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-customer-portal-order__summary,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-customer-portal-order__shipping,
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-customer-portal-order__actions-aside {
+  display: none !important;
+}
+
+/* In collapsed state, show only the first item summary */
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-cart-item-sum:nth-child(n+2),
+.ecwid-orders-wrapper .earthlife-order--collapsed .ec-customer-portal-order__items > *:nth-child(n+2) {
+  display: none !important;
+}
+
+/* FIX 1: Expanded State - Show all details naturally */
+.ecwid-orders-wrapper .earthlife-order--expanded {
+  border-color: #1E3A2B !important;
+  box-shadow: 0 4px 12px rgba(30, 58, 43, 0.08) !important;
+}
+
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-confirmation__section,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-cart-order__summary,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-confirmation__shipping,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-confirmation__tracking,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-confirmation__footer,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-customer-portal-order__summary,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-customer-portal-order__shipping,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-cart-item-sum,
+.ecwid-orders-wrapper .earthlife-order--expanded .ec-customer-portal-order__items > * {
+  display: block !important;
+}
+
+/* EarthLife Action Bar for Order Cards */
+.earthlife-order-actions-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  margin-top: 1.25rem !important;
+  padding-top: 1rem !important;
+  border-top: 1px solid #F3F4F6 !important;
+  flex-wrap: wrap !important;
+}
+
+.earthlife-order-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.65rem 1.25rem !important;
+  border-radius: 8px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid transparent !important;
+  text-decoration: none !important;
+  font-family: inherit !important;
+}
+
+/* FIX 1: View Details / Hide Details Toggle */
+.earthlife-order-btn--toggle {
+  background-color: #F8F6F0 !important;
+  color: #1E3A2B !important;
+  border: 1px solid #D1D5DB !important;
+}
+
+.earthlife-order-btn--toggle:hover {
+  background-color: #EFECE4 !important;
+  border-color: #1E3A2B !important;
+  color: #1E3A2B !important;
+}
+
+/* FIX 2: Buy Again Button */
+.earthlife-order-btn--buy-again {
+  background-color: #1E3A2B !important;
+  color: #FFFFFF !important;
+  border: 1px solid #1E3A2B !important;
+}
+
+.earthlife-order-btn--buy-again:hover:not(:disabled) {
+  background-color: #2D5540 !important;
+  border-color: #2D5540 !important;
+  color: #FFFFFF !important;
+}
+
+.earthlife-order-btn--buy-again:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+
+/* RESPONSIVE STYLES */
+@media (max-width: 900px) {
+  .auth-form-column {
+    padding: 2rem 1.5rem;
+  }
+  
+  .account-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .account-main-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .account-card-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .account-card-title-group {
+    max-width: 100%;
+  }
+  
+  .account-card-script-accent {
+    align-self: flex-start;
+  }
+  
+  .address-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .address-card-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 1rem;
+    border-top: 1px solid #F3F4F6;
+  }
+}
+
+/* ==========================================================================
+   EARTHLIFE NATIVE ECWID AUTH WRAPPER
+   ========================================================================== */
+.earthlife-native-auth-wrapper {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.earthlife-native-auth-wrapper .ecwid-store-container,
+.earthlife-native-auth-wrapper .ec-store {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.earthlife-native-auth-wrapper .ec-account-breadcrumbs,
+.earthlife-native-auth-wrapper .ec-store__category-page,
+.earthlife-native-auth-wrapper .ec-category-menu,
+.earthlife-native-auth-wrapper .ec-search {
+  display: none !important;
+}
+
+.earthlife-native-auth-wrapper .ec-cart-email__input input,
+.earthlife-native-auth-wrapper .authorization-widget__email-field input,
+.earthlife-native-auth-wrapper .ec-signin-email-input,
+.earthlife-native-auth-wrapper .ec-form--signin input[type="email"],
+.earthlife-native-auth-wrapper .authorization-widget__code-field input {
+  width: 100% !important;
+  padding: 0.85rem 1rem !important;
+  border: 1px solid #D1D5DB !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  color: #1F2937 !important;
+  background-color: #FFFFFF !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+}
+
+.earthlife-native-auth-wrapper .ec-cart-email__input input:focus,
+.earthlife-native-auth-wrapper .authorization-widget__email-field input:focus,
+.earthlife-native-auth-wrapper .authorization-widget__code-field input:focus {
+  border-color: #1E3A2B !important;
+  box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.12) !important;
+}
+
+.earthlife-native-auth-wrapper .authorization-widget__submit-button,
+.earthlife-native-auth-wrapper .authorization-widget__submit-code-button,
+.earthlife-native-auth-wrapper .ec-cart__buttons button,
+.earthlife-native-auth-wrapper .ec-signin-form button[type="submit"],
+.earthlife-native-auth-wrapper .ec-form--signin button[type="submit"] {
+  width: 100% !important;
+  background-color: #1E3A2B !important;
+  color: #FFFFFF !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  padding: 0.95rem 1.5rem !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+  margin-top: 0.85rem !important;
+  display: block !important;
+}
+
+.earthlife-native-auth-wrapper .authorization-widget__submit-button:hover,
+.earthlife-native-auth-wrapper .authorization-widget__submit-code-button:hover,
+.earthlife-native-auth-wrapper .ec-cart__buttons button:hover,
+.earthlife-native-auth-wrapper .ec-signin-form button[type="submit"]:hover,
+.earthlife-native-auth-wrapper .ec-form--signin button[type="submit"]:hover {
+  background-color: #2D5540 !important;
+}
+
+.earthlife-native-auth-wrapper .authorization-widget__captcha,
+.earthlife-native-auth-wrapper .ec-captcha,
+.earthlife-native-auth-wrapper .cf-turnstile {
+  margin: 1rem 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+

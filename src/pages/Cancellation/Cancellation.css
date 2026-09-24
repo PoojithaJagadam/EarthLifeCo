@@ -1,0 +1,86 @@
+.cancellation-page {
+  padding-bottom: var(--spacing-2xl);
+  min-height: 70vh;
+}
+
+.cancellation-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.cancellation-container h1 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.cancellation-form .form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.cancellation-form label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.cancellation-form input,
+.cancellation-form textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.cancellation-form input:focus,
+.cancellation-form textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.cancellation-success {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: #E6EFE6;
+  color: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 0 auto var(--spacing-md);
+}
+
+.cancellation-success h2 {
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.cancellation-success p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.6;
+}
+
+.error-message {
+  background: #fdeaea;
+  color: #d32f2f;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}

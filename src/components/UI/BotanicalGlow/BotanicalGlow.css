@@ -1,0 +1,102 @@
+/* ==========================================================================
+   EarthLife Co. — Botanical Glowing Border Effect
+   Adapted from the GlowingShadow concept for EarthLife's eco-aesthetic:
+   - Natural forest & sage greens (#2C4A3B, #4E8766)
+   - Subtle warm golden highlight (#D4AF37, #E5C384)
+   - Border-only perimeter travel (no large inner background blobs)
+   - 6-second slow, calm, luxury animation cycle
+   - pointer-events: none (zero click interference)
+   - Full accessibility with prefers-reduced-motion fallback
+   ========================================================================== */
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.botanical-glow-card {
+  position: relative;
+  isolation: isolate;
+}
+
+/* 1. Crisp perimeter border stream */
+.botanical-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0%,
+    rgba(44, 74, 59, 0.08) 15%,
+    rgba(78, 135, 102, 0.7) 35%,
+    rgba(212, 175, 55, 0.85) 50%,
+    rgba(78, 135, 102, 0.7) 65%,
+    rgba(44, 74, 59, 0.08) 85%,
+    transparent 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.65;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  animation: botanical-border-rotate 6s linear infinite;
+}
+
+/* 2. Soft, subtle exterior halo glow (keeps inner content 100% untouched) */
+.botanical-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0%,
+    transparent 20%,
+    rgba(78, 135, 102, 0.3) 42%,
+    rgba(212, 175, 55, 0.45) 50%,
+    rgba(78, 135, 102, 0.3) 58%,
+    transparent 80%,
+    transparent 100%
+  );
+  filter: blur(5px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  animation: botanical-border-rotate 6s linear infinite;
+}
+
+@keyframes botanical-border-rotate {
+  0% {
+    --glow-angle: 0deg;
+  }
+  100% {
+    --glow-angle: 360deg;
+  }
+}
+
+/* Hover refinement: slightly enhances border glow without changing layout */
+.botanical-glow-card:hover::before {
+  opacity: 1;
+}
+
+.botanical-glow-card:hover::after {
+  opacity: 0.7;
+  filter: blur(7px);
+}
+
+/* Accessibility: Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .botanical-glow-card::before,
+  .botanical-glow-card::after {
+    animation: none;
+    background: linear-gradient(135deg, rgba(78, 135, 102, 0.5), rgba(212, 175, 55, 0.4));
+  }
+}

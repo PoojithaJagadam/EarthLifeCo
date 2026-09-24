@@ -1,0 +1,57 @@
+/* ==========================================================================
+   EarthLife Co. — RandomLetterSwap Navigation Effect
+   Clean, premium, subtle staggered letter rolling transition on hover
+   - Keeps exact font-family, font-size, font-weight, and brand colors
+   - Preserves keyboard accessibility and click events (pointer-events: none on spans)
+   - Zero layout shift or navbar height change
+   - Full @media (prefers-reduced-motion: reduce) support
+   ========================================================================== */
+
+.letter-swap-wrapper {
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  line-height: 1.2;
+  vertical-align: middle;
+  pointer-events: none;
+}
+
+.letter-swap-char {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform var(--swap-duration, 0.45s) cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--swap-delay, 0s);
+  transform: translateY(0%);
+}
+
+.letter-swap-char span {
+  display: inline-block;
+  line-height: inherit;
+  color: inherit;
+}
+
+.letter-swap-char span:last-child {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: inherit;
+}
+
+/* On parent link hover or focus: roll letters up smoothly */
+.nav-links a:hover .letter-swap-char,
+.nav-links a:focus-visible .letter-swap-char,
+.letter-swap-wrapper.is-hovered .letter-swap-char {
+  transform: translateY(-100%);
+}
+
+/* Reduced Motion Fallback */
+@media (prefers-reduced-motion: reduce) {
+  .letter-swap-char {
+    transition: none !important;
+    transform: none !important;
+  }
+  .letter-swap-char span:last-child {
+    display: none !important;
+  }
+}
