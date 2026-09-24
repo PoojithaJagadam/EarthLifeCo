@@ -1,0 +1,20 @@
+.reviewBlockSection {
+  padding: 3rem 0;
+  border-top: 1px solid #ECE4D8;
+  margin-top: 2rem;
+  background-color: #FAFAFA;
+}
+
+.reviewBlockContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.reviewBlockTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  color: #1E3A2B;
+  margin-bottom: 2rem;
+  text-align: center;
+}

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useEcwidOrders } from '../../hooks/useEcwidOrders';
 import { addProductToEcwidCart } from '../../ecwid/cart/ecwidCart';
 import { ChevronDown, ChevronUp, RotateCcw, AlertTriangle, CheckCircle, Package } from 'lucide-react';
+import HelpfulCrowdWidget from '../../integrations/helpfulcrowd/HelpfulCrowdWidget';
 import './Orders.css';
 
 export default function Orders() {
@@ -188,6 +190,15 @@ export default function Orders() {
                             <span className="expanded-item-name">{item.name}</span>
                             <span className="expanded-item-qty">Qty: {item.quantity || 1}</span>
                             {item.sku && <span className="expanded-item-sku">SKU: {item.sku}</span>}
+                            <div style={{ marginTop: '0.5rem' }}>
+                              <Link 
+                                to={`/product/${item.productId || item.id}#write-review`}
+                                className="order-action-btn"
+                                style={{ display: 'inline-block', fontSize: '0.75rem', padding: '0.25rem 0.5rem', background: '#f9f9f9', border: '1px solid #ddd', borderRadius: '4px', color: '#1E3A2B', textDecoration: 'none' }}
+                              >
+                                Write a Review
+                              </Link>
+                            </div>
                           </div>
                           <span className="expanded-item-price">
                             ₹{(Number(item.price || 0) * (item.quantity || 1)).toFixed(2)}
@@ -264,6 +275,9 @@ export default function Orders() {
           })}
         </div>
       )}
+
+      {/* HelpfulCrowd Sidebar Widget */}
+      <HelpfulCrowdWidget widgetType="sidebar" />
     </div>
   );
 }

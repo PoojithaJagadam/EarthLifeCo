@@ -25,6 +25,7 @@ import { useEcwidCategories } from '../../hooks/useEcwidCategories';
 import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import HelpfulCrowdWidget from '../../integrations/helpfulcrowd/HelpfulCrowdWidget';
 import './Home.css';
 
 const CATEGORY_BG_COLORS = ['#F6ECE1', '#EBF2EB', '#F7EFE7', '#F4ECE4'];
@@ -542,37 +543,8 @@ const Home = () => {
               View More in About →
             </Link>
           </div>
-          <div className="testimonial-grid">
-            <div className="testimonial-card">
-              <div className="test-header">
-                <div className="avatar">M</div>
-                <div>
-                  <h4>Monika N.</h4>
-                  <div className="stars">★★★★★</div>
-                </div>
-              </div>
-              <p>"Nice product, very good quality and eco-friendly. Highly recommended!"</p>
-            </div>
-            <div className="testimonial-card">
-              <div className="test-header">
-                <div className="avatar">U</div>
-                <div>
-                  <h4>Uma M.</h4>
-                  <div className="stars">★★★★★</div>
-                </div>
-              </div>
-              <p>"Good product. Using it daily and really happy with the quality."</p>
-            </div>
-            <div className="testimonial-card">
-              <div className="test-header">
-                <div className="avatar">P</div>
-                <div>
-                  <h4>Priya S.</h4>
-                  <div className="stars">★★★★★</div>
-                </div>
-              </div>
-              <p>"Great quality and feels premium. Happy to support such sustainable products!"</p>
-            </div>
+          <div style={{ marginTop: '2rem' }}>
+            <HelpfulCrowdWidget widgetType="review-slider" />
           </div>
         </Container>
       </section>
