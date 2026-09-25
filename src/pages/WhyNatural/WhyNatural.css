@@ -537,11 +537,37 @@
 }
 
 @media (max-width: 480px) {
+  .why-hero-section {
+    padding: 2.25rem 0 2rem;
+  }
+
   .why-hero-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   .why-hero-subtitle {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
+  }
+
+  .why-section-heading {
+    font-size: 1.75rem;
+  }
+
+  .why-primary-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  .why-banner-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .why-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .why-mv-card {
+    padding: 1.75rem 1.25rem;
   }
 }

@@ -122,7 +122,7 @@ export default function Orders() {
         </div>
       ) : (
         <div className="orders-list">
-          {orders.map((order) => {
+          {orders.filter(Boolean).map((order) => {
             const isExpanded = expandedOrderId === order.id;
             const isReordering = reorderingOrderId === order.id;
             const feedback = reorderFeedback?.orderId === order.id ? reorderFeedback : null;
@@ -208,13 +208,13 @@ export default function Orders() {
                     </div>
 
                     {/* Shipping & Delivery Info if present */}
-                    {order.shippingPerson && (
+                    {order?.shippingPerson && (
                       <div className="order-shipping-details">
                         <h4 className="details-heading">Delivery Address</h4>
                         <p className="shipping-text">
-                          <strong>{order.shippingPerson.name}</strong><br />
-                          {order.shippingPerson.street}<br />
-                          {order.shippingPerson.city}, {order.shippingPerson.stateOrProvinceCode} - {order.shippingPerson.postalCode}<br />
+                          <strong>{order.shippingPerson.name || ''}</strong><br />
+                          {order.shippingPerson.street || ''}<br />
+                          {order.shippingPerson.city || ''}, {order.shippingPerson.stateOrProvinceCode || ''} - {order.shippingPerson.postalCode || ''}<br />
                           {order.shippingPerson.countryName || 'India'}
                         </p>
                       </div>

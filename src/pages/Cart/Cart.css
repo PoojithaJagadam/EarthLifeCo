@@ -816,6 +816,10 @@
 }
 
 @media (max-width: 600px) {
+  .cart-hero {
+    padding: 2.5rem 1rem 2rem;
+  }
+
   .cart-hero-title {
     font-size: 2.15rem;
   }
@@ -823,20 +827,76 @@
   .cart-table-bottom {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
 
   .cart-coupon-form {
     width: 100%;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .cart-coupon-input {
-    flex: 1;
+    width: 100%;
     min-width: 0;
+    min-height: 44px;
+    font-size: 16px !important;
+  }
+
+  .cart-coupon-btn {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .cart-clear-btn {
+    text-align: center;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-checkout-btn {
+    min-height: 50px;
+    padding: 0.95rem 1rem;
+  }
+
+  .cart-summary-card {
+    padding: 1.5rem 1rem;
   }
 
   .cart-related-grid {
     grid-template-columns: 1fr;
     max-width: 340px;
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .cart-hero-title {
+    font-size: 1.85rem;
+  }
+
+  .cart-item-row {
+    padding: 1rem 0.75rem;
+  }
+
+  .cart-item-image-box {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-item-title {
+    font-size: 0.92rem;
+  }
+
+  .cart-qty-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cart-qty-val {
+    min-width: 30px;
+    font-size: 0.9rem;
   }
 }

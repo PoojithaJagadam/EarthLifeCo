@@ -900,6 +900,54 @@
   }
 }
 
+@media (max-width: 480px) {
+  .account-page-wrapper {
+    padding: 1.5rem 0 3.5rem 0;
+  }
+
+  .account-container {
+    padding: 0 1rem;
+  }
+
+  .auth-form-column {
+    padding: 1.75rem 1rem;
+  }
+
+  .auth-title {
+    font-size: 1.75rem;
+  }
+
+  .account-main-card {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+
+  .account-card-title {
+    font-size: 1.6rem;
+  }
+
+  .auth-input,
+  .form-input,
+  .form-select,
+  .auth-select-country,
+  .phone-country-code {
+    font-size: 16px !important;
+  }
+
+  .auth-submit-btn,
+  .account-save-btn,
+  .add-address-top-btn {
+    min-height: 48px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .account-nav-btn {
+    padding: 0.85rem 1rem;
+    min-height: 44px;
+  }
+}
+
 /* ==========================================================================
    EARTHLIFE NATIVE ECWID AUTH WRAPPER
    ========================================================================== */

@@ -1,14 +1,25 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').trim();
 
 export async function fetchCustomerOrders(email) {
-  if (!email) throw new Error('Email is required to fetch orders');
+  if (!email) return [];
   
-  const response = await fetch(`${API_BASE}/api/ecwid/orders?email=${encodeURIComponent(email)}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch orders from Ecwid');
+  try {
+    const response = await fetch(`${API_BASE}/api/ecwid/orders?email=${encodeURIComponent(email)}`);
+    
+    if (!response.ok) {
+      console.warn(`Fetch orders response not ok: ${response.status}`);
+      return [];
+    }
+    
+    const text = await response.text();
+    if (!text || text.trim() === '' || text.trim() === 'undefined' || text.trim() === 'null') {
+      return [];
+    }
+    
+    const data = JSON.parse(text);
+    return Array.isArray(data.items) ? data.items : [];
+  } catch (err) {
+    console.warn('Failed to fetch orders from Ecwid:', err);
+    return [];
   }
-  
-  const data = await response.json();
-  return data.items || [];
 }

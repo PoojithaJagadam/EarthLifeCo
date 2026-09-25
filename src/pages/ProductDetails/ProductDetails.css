@@ -750,9 +750,33 @@
   }
   .pd-quantity-stepper {
     justify-content: center;
+    width: 100%;
+  }
+  .pd-qty-btn {
+    min-width: 48px;
+    height: 48px;
   }
   .pd-related-grid {
     grid-template-columns: 1fr;
+  }
+  .pd-specs-grid {
+    grid-template-columns: 1fr;
+  }
+  .pd-badges-grid {
+    gap: 0.5rem;
+  }
+  .pd-badge-card {
+    padding: 0.65rem 0.35rem;
+  }
+  .pd-badge-title {
+    font-size: 0.72rem;
+  }
+  .pd-zoom-modal-overlay {
+    padding: 1rem;
+  }
+  .pd-zoom-close-btn {
+    top: 8px;
+    right: 8px;
   }
 }
 

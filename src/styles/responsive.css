@@ -1,8 +1,8 @@
 /* Container & Layout Utilities */
 .container {
-  max-width: var(--max-content-width);
+  max-width: var(--max-content-width, 1200px);
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--spacing-lg, 1.5rem);
   width: 100%;
 }
 
@@ -21,36 +21,65 @@
 
 /* Breakpoints & Responsive Utilities */
 
-/* Tablet & Smaller */
+/* Tablet & Smaller (<= 1024px) */
 @media (max-width: 1024px) {
   h1 { font-size: 2.8rem; }
   h2 { font-size: 2.2rem; }
   
   .container {
-    padding: 0 var(--spacing-lg);
+    padding: 0 1.25rem;
   }
 }
 
-/* Mobile */
+/* Mobile & Tablet Portrait (<= 768px) */
 @media (max-width: 768px) {
   h1 { font-size: 2.2rem; }
   h2 { font-size: 1.8rem; }
-  h3 { font-size: 1.5rem; }
+  h3 { font-size: 1.4rem; }
+  h4 { font-size: 1.2rem; }
   
   .container {
-    padding: 0 var(--spacing-md);
+    padding: 0 1rem;
   }
   
   .hide-on-mobile {
     display: none !important;
   }
-}
 
-/* Small Mobile */
-@media (max-width: 430px) {
-  h1 { font-size: 2rem; }
-  
-  .container {
-    padding: 0 var(--spacing-sm);
+  .show-on-mobile {
+    display: block !important;
+  }
+
+  /* Prevent iOS zoom-in on input focus */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }
+
+/* Small Mobile (<= 430px) */
+@media (max-width: 430px) {
+  h1 { font-size: 1.95rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.3rem; }
+  
+  .container {
+    padding: 0 0.85rem;
+  }
+}
+
+/* Extra Small Mobile (<= 375px) */
+@media (max-width: 375px) {
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.45rem; }
+  
+  .container {
+    padding: 0 0.75rem;
+  }
+}
+

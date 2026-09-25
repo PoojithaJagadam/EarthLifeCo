@@ -73,3 +73,20 @@
     display: none !important;
   }
 }
+
+@media (max-width: 480px) {
+  .trust-right {
+    gap: 8px;
+    justify-content: center;
+  }
+  .trust-tagline {
+    font-size: 0.75rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .trust-tagline {
+    font-size: 0.7rem;
+  }
+}

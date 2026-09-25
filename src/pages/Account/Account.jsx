@@ -33,17 +33,87 @@ const Account = () => {
     updateProfile 
   } = useEcwidAccount();
 
-  const { cartCount } = useCart();
+  const { cartCount, clearCart } = useCart();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isFromCheckout = searchParams.get('redirect') === 'checkout';
 
+  // Detect whether page is currently showing an Ecwid Order Confirmation
+  const [orderConfirmationInfo, setOrderConfirmationInfo] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash || '';
+      const href = window.location.href || '';
+      if (hash.includes('orderConfirmation') || href.includes('orderConfirmation')) {
+        const match = href.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i) || hash.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i);
+        return {
+          isConfirmed: true,
+          orderNumber: match ? decodeURIComponent(match[1]) : ''
+        };
+      }
+    }
+    return { isConfirmed: false, orderNumber: '' };
+  });
+
+  // Listen for order completion in Ecwid or hash changes to orderConfirmation
+  useEffect(() => {
+    const handleOrderPlaced = (order) => {
+      clearCart();
+      const orderNum = order?.orderNumber || order?.id || '';
+      setOrderConfirmationInfo({
+        isConfirmed: true,
+        orderNumber: String(orderNum)
+      });
+    };
+
+    const checkHash = () => {
+      const hash = window.location.hash || '';
+      const href = window.location.href || '';
+      if (hash.includes('orderConfirmation') || href.includes('orderConfirmation')) {
+        clearCart();
+        const match = href.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i) || hash.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i);
+        setOrderConfirmationInfo({
+          isConfirmed: true,
+          orderNumber: match ? decodeURIComponent(match[1]) : ''
+        });
+      }
+    };
+
+    window.addEventListener('hashchange', checkHash);
+    checkHash();
+
+    let unsubscribe = null;
+    if (window.Ecwid && window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
+      try {
+        window.Ecwid.OnOrderPlaced.add(handleOrderPlaced);
+      } catch (err) {
+        console.warn('Could not attach OnOrderPlaced in Account:', err);
+      }
+    } else {
+      const interval = setInterval(() => {
+        if (window.Ecwid && window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
+          clearInterval(interval);
+          try {
+            window.Ecwid.OnOrderPlaced.add(handleOrderPlaced);
+          } catch (err) {
+            console.warn('Could not attach OnOrderPlaced in Account:', err);
+          }
+        }
+      }, 500);
+      unsubscribe = () => clearInterval(interval);
+    }
+
+    return () => {
+      window.removeEventListener('hashchange', checkHash);
+      if (unsubscribe) unsubscribe();
+    };
+  }, [clearCart]);
+
   // Automatically return to Ecwid Shopping Cart on checkout once logged in
   useEffect(() => {
-    if (isLoggedIn && isFromCheckout) {
+    if (isLoggedIn && isFromCheckout && !orderConfirmationInfo.isConfirmed) {
       navigate('/checkout?step=ecwid-cart', { replace: true });
     }
-  }, [isLoggedIn, isFromCheckout, navigate]);
+  }, [isLoggedIn, isFromCheckout, navigate, orderConfirmationInfo.isConfirmed]);
 
   // Authenticated view state: 'details' | 'addresses' | 'orders' | 'overview'
   const [activeTab, setActiveTab] = useState(() => {
@@ -341,6 +411,102 @@ const Account = () => {
   };
 
   // ---------------------------------------------------------------------------
+  // RENDER: ORDER CONFIRMATION FLOW (When order has just been placed in Ecwid)
+  // ---------------------------------------------------------------------------
+  if (orderConfirmationInfo.isConfirmed) {
+    return (
+      <div className="account-page-wrapper">
+        <div className="account-container">
+          <div className="account-breadcrumbs">
+            <Link to="/">Home</Link>
+            <span>&gt;</span>
+            <Link to="/account" onClick={() => setOrderConfirmationInfo({ isConfirmed: false, orderNumber: '' })}>My Account</Link>
+            <span>&gt;</span>
+            <span className="current">Order Confirmed</span>
+          </div>
+
+          <div className="account-auth-container">
+            <div className="auth-form-column" style={{ maxWidth: '850px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+              <div className="auth-header" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  backgroundColor: '#EAF0EC',
+                  color: '#1E3A2B',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem'
+                }}>
+                  <CheckCircle2 size={32} />
+                </div>
+                <h1 className="auth-title" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                  Order Confirmed! 🎉
+                </h1>
+                <p className="auth-subtitle" style={{ maxWidth: '540px', margin: '0 auto 1.25rem' }}>
+                  Thank you for shopping sustainably with EarthLife Co. Your order {orderConfirmationInfo.orderNumber ? `(#${orderConfirmationInfo.orderNumber}) ` : ''}has been successfully registered with our store.
+                </p>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/store"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.7rem 1.35rem',
+                      borderRadius: '8px',
+                      backgroundColor: '#1E3A2B',
+                      color: '#FFFFFF',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      fontSize: '0.92rem'
+                    }}
+                  >
+                    <span>Continue Shopping</span>
+                    <ArrowRight size={16} />
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOrderConfirmationInfo({ isConfirmed: false, orderNumber: '' });
+                      window.location.hash = '!/~/account/orders';
+                      setActiveTab('orders');
+                    }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.7rem 1.35rem',
+                      borderRadius: '8px',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #C4D9CC',
+                      color: '#1E3A2B',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      fontSize: '0.92rem'
+                    }}
+                  >
+                    <Package size={16} />
+                    <span>View My Orders</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Native Ecwid Order Confirmation embed */}
+              <div className="earthlife-native-auth-wrapper">
+                <EcwidStore />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
   // RENDER: GUEST FLOW (Matching EarthLifeCo-Account-creation.jpeg)
   // Utilizes real Ecwid native sign-in flow with native CAPTCHA & Access Code
   // ---------------------------------------------------------------------------
@@ -365,7 +531,7 @@ const Account = () => {
                 </p>
               </div>
 
-              {isFromCheckout && (
+              {isFromCheckout && cartCount > 0 && !orderConfirmationInfo.isConfirmed && (
                 <div style={{
                   backgroundColor: '#EAF0EC',
                   border: '1px solid #C4D9CC',

@@ -169,7 +169,8 @@
   color: #1E3A2B;
   line-height: 1.25;
   margin-bottom: 2px;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .benefit-text small {
@@ -927,6 +928,10 @@
     right: 0.75rem;
     font-size: 1.6rem;
   }
+  .hero-benefits {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
   .products-showcase-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -950,6 +955,13 @@
   }
   .proof-divider {
     display: none;
+  }
+  .cta-container-split {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .cta-image {
+    height: 260px;
   }
 }
 

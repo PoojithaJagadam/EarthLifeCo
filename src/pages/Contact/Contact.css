@@ -634,11 +634,50 @@
 }
 
 @media (max-width: 480px) {
+  .contact-hero-section {
+    padding: 2.25rem 0 2rem;
+  }
+
   .contact-hero-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   .contact-section-heading {
-    font-size: 2rem;
+    font-size: 1.75rem;
+  }
+
+  .contact-main-section {
+    padding: 3rem 0;
+  }
+
+  .contact-card {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+
+  .form-field-input,
+  .form-field-textarea {
+    font-size: 16px !important;
+  }
+
+  .contact-whatsapp-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.85rem 1rem;
+    font-size: 0.98rem;
+  }
+
+  .contact-faq-banner {
+    padding: 2rem 1.25rem;
+  }
+
+  .contact-faq-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .contact-faq-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
   }
 }

@@ -226,8 +226,21 @@
 @media (max-width: 520px) {
   .footer-grid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
   .footer-col-subscribe {
     grid-column: span 1;
+  }
+  .newsletter-input {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  .newsletter-submit-btn {
+    min-height: 44px;
+    padding: 0 16px;
+  }
+  .footer-social-btn {
+    width: 40px;
+    height: 40px;
   }
 }

@@ -1296,19 +1296,145 @@
 }
 
 @media (max-width: 640px) {
+  .checkout-hero {
+    padding: 2rem 1rem 1.75rem;
+  }
+
+  .checkout-title {
+    font-size: 1.85rem;
+  }
+
+  .checkout-stepper {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .checkout-stepper-divider {
+    width: 20px;
+  }
+
+  .checkout-step-label {
+    font-size: 0.82rem;
+  }
+
+  .checkout-main-container {
+    padding: 0 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .checkout-section-card {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+
   .checkout-form-row {
     grid-template-columns: 1fr;
   }
 
-  .checkout-title {
-    font-size: 2rem;
+  .checkout-input,
+  .checkout-select {
+    font-size: 16px !important;
   }
 
-  .checkout-section-card {
-    padding: 1.5rem;
+  .checkout-address-tabs {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .checkout-step2-details-grid {
+  .checkout-tab-btn {
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .checkout-address-card {
+    padding: 1rem;
+  }
+
+  .checkout-summary-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .checkout-step2-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .checkout-pay-btn,
+  .checkout-back-step-btn {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    min-height: 50px;
+  }
+
+  .checkout-delivery-preview {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkout-order-placed-container {
+    padding: 2rem 1.25rem;
+  }
+
+  .checkout-order-placed-title {
+    font-size: 1.85rem;
+  }
+
+  .checkout-order-placed-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .checkout-order-placed-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .checkout-order-placed-primary-btn,
+  .checkout-order-placed-sec-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  .checkout-modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .checkout-modal-card {
+    max-height: 94vh;
+    border-radius: 12px;
+  }
+
+  .checkout-modal-header,
+  .checkout-modal-form,
+  .checkout-modal-footer {
+    padding: 1rem;
+  }
+
+  .checkout-modal-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .checkout-modal-save-btn,
+  .checkout-modal-cancel-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 390px) {
+  .checkout-title {
+    font-size: 1.65rem;
+  }
+
+  .checkout-stepper-divider {
+    display: none;
   }
 }

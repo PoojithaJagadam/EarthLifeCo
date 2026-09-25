@@ -934,26 +934,26 @@ export async function handleEcwidApi(req, res) {
         tax: Number(totals?.tax || 0),
         items: ecwidItems,
         shippingPerson: {
-          name: shippingAddress.name || '',
-          companyName: shippingAddress.companyName || '',
-          street: shippingAddress.street || shippingAddress.address1 || '',
-          city: shippingAddress.city || '',
+          name: (shippingAddress && shippingAddress.name) || '',
+          companyName: (shippingAddress && shippingAddress.companyName) || '',
+          street: (shippingAddress && (shippingAddress.street || shippingAddress.address1)) || '',
+          city: (shippingAddress && shippingAddress.city) || '',
           countryCode: 'IN',
           countryName: 'India',
-          postalCode: shippingAddress.postalCode || shippingAddress.pincode || '',
-          stateOrProvinceCode: shippingAddress.state || '',
-          phone: shippingAddress.phone || ''
+          postalCode: (shippingAddress && (shippingAddress.postalCode || shippingAddress.pincode)) || '',
+          stateOrProvinceCode: (shippingAddress && shippingAddress.state) || '',
+          phone: (shippingAddress && shippingAddress.phone) || ''
         },
         billingPerson: {
-          name: shippingAddress.name || '',
-          companyName: shippingAddress.companyName || '',
-          street: shippingAddress.street || shippingAddress.address1 || '',
-          city: shippingAddress.city || '',
+          name: (shippingAddress && shippingAddress.name) || '',
+          companyName: (shippingAddress && shippingAddress.companyName) || '',
+          street: (shippingAddress && (shippingAddress.street || shippingAddress.address1)) || '',
+          city: (shippingAddress && shippingAddress.city) || '',
           countryCode: 'IN',
           countryName: 'India',
-          postalCode: shippingAddress.postalCode || shippingAddress.pincode || '',
-          stateOrProvinceCode: shippingAddress.state || '',
-          phone: shippingAddress.phone || ''
+          postalCode: (shippingAddress && (shippingAddress.postalCode || shippingAddress.pincode)) || '',
+          stateOrProvinceCode: (shippingAddress && shippingAddress.state) || '',
+          phone: (shippingAddress && shippingAddress.phone) || ''
         },
         shippingOption: {
           shippingMethodName: 'Standard Delivery',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Mail,
   User,
@@ -85,7 +85,6 @@ const Checkout = () => {
 
   const { customer, isLoggedIn } = useEcwidAccount();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   // Current checkout step: 1 = Shipping/Address, 2 = Ecwid Commerce Journey, 3 = Order Placed
   const [currentStep, setCurrentStep] = useState(() => {
@@ -107,7 +106,8 @@ const Checkout = () => {
   // Customer Contact Email
   const [email, setEmail] = useState(() => {
     try {
-      return customer?.email || contextEmail || localStorage.getItem('earthlife_customer_email') || '';
+      const val = customer?.email || contextEmail || localStorage.getItem('earthlife_customer_email') || '';
+      return (val && val !== 'undefined' && val !== 'null') ? val : '';
     } catch {
       return '';
     }
@@ -125,7 +125,9 @@ const Checkout = () => {
   const [savedAddresses, setSavedAddresses] = useState(() => {
     try {
       const saved = localStorage.getItem('earthlife_saved_addresses');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved || saved === 'undefined' || saved === 'null') return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
@@ -135,8 +137,9 @@ const Checkout = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(() => {
     try {
       const saved = localStorage.getItem('earthlife_saved_addresses');
-      const list = saved ? JSON.parse(saved) : [];
-      return list.length > 0 ? list[0].id : null;
+      if (!saved || saved === 'undefined' || saved === 'null') return null;
+      const list = JSON.parse(saved);
+      return Array.isArray(list) && list.length > 0 ? list[0].id : null;
     } catch {
       return null;
     }
@@ -146,8 +149,9 @@ const Checkout = () => {
   const [activeAddressTab, setActiveAddressTab] = useState(() => {
     try {
       const saved = localStorage.getItem('earthlife_saved_addresses');
-      const list = saved ? JSON.parse(saved) : [];
-      return list.length > 0 ? 'saved' : 'new';
+      if (!saved || saved === 'undefined' || saved === 'null') return 'new';
+      const list = JSON.parse(saved);
+      return Array.isArray(list) && list.length > 0 ? 'saved' : 'new';
     } catch {
       return 'new';
     }
@@ -209,30 +213,30 @@ const Checkout = () => {
     let isSubscribed = true;
 
     const onOrderPlacedListener = async (order) => {
-      if (!isSubscribed || !order) return;
+      if (!isSubscribed || !order || typeof order !== 'object') return;
       console.log('Real Ecwid Order Placed event received:', order);
 
-      const activeAddr = savedAddresses.find((a) => a.id === selectedAddressId);
-      const verifiedAddress = activeAddr || (savedAddresses.length > 0 ? savedAddresses[0] : null);
+      const activeAddr = Array.isArray(savedAddresses) ? savedAddresses.find((a) => a && a.id === selectedAddressId) : null;
+      const verifiedAddress = activeAddr || (Array.isArray(savedAddresses) && savedAddresses.length > 0 ? savedAddresses[0] : null);
 
       const orderSummaryRecord = {
-        orderId: order.orderNumber || order.id || order.referenceTransactionId || 'ORD-ECWID',
-        id: order.id || order.orderNumber,
-        email: order.email || customer?.email || contextEmail || email || '',
-        total: order.total || cartTotals.total || cartTotals.subtotal,
-        subtotal: order.subtotal || cartTotals.subtotal,
-        shipping: order.shippingPerson?.shippingMethod || cartTotals.shipping || 0,
-        tax: order.tax || cartTotals.tax || 0,
-        paymentMethod: order.paymentMethod || 'Razorpay / Online Payment',
-        paymentStatus: order.paymentStatus || 'PAID',
-        shippingAddress: order.shippingPerson || verifiedAddress,
-        items: Array.isArray(order.items) && order.items.length > 0
+        orderId: order?.orderNumber || order?.id || order?.referenceTransactionId || 'ORD-ECWID',
+        id: order?.id || order?.orderNumber,
+        email: order?.email || customer?.email || contextEmail || email || '',
+        total: order?.total || cartTotals?.total || cartTotals?.subtotal,
+        subtotal: order?.subtotal || cartTotals?.subtotal,
+        shipping: order?.shippingPerson?.shippingMethod || cartTotals?.shipping || 0,
+        tax: order?.tax || cartTotals?.tax || 0,
+        paymentMethod: order?.paymentMethod || 'Razorpay / Online Payment',
+        paymentStatus: order?.paymentStatus || 'PAID',
+        shippingAddress: order?.shippingPerson || verifiedAddress,
+        items: Array.isArray(order?.items) && order.items.length > 0
           ? order.items.map((it) => ({
-              id: it.id,
-              name: it.name,
-              price: it.price,
-              quantity: it.quantity,
-              image: it.imageUrl || it.thumbnailUrl || ''
+              id: it?.id,
+              name: it?.name || 'EarthLife Product',
+              price: it?.price || 0,
+              quantity: it?.quantity || 1,
+              image: it?.imageUrl || it?.thumbnailUrl || ''
             }))
           : [...cartItems],
         date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -528,15 +532,10 @@ const Checkout = () => {
 
     // Required flow:
     // Cart -> shipping address -> continue to payment
-    // → Check customer login
-    // → If logged in: Native Ecwid Shopping Cart
-    // → If not logged in: Native Ecwid Sign In in Account section (email + access code)
-    if (!isLoggedIn) {
-      navigate('/account?redirect=checkout');
-    } else {
-      setCurrentStep(2);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Proceed directly to Step 2 (Native Ecwid Cart & Payment flow right in Checkout)
+    // If user is already logged in, Ecwid opens Cart. If not, Ecwid opens Sign-in in Step 2.
+    setCurrentStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Empty cart guard (only show if no order was just completed)
@@ -877,7 +876,7 @@ const Checkout = () => {
               */}
               <div style={{ minHeight: '520px' }}>
                 <EcwidStore
-                  key={isLoggedIn ? 'ecwid-native-cart' : 'ecwid-native-signin'}
+                  key="checkout-native-ecwid-store"
                   defaultPage={isLoggedIn ? 'cart' : 'signin'}
                   placeholderText={
                     isLoggedIn

@@ -113,7 +113,7 @@ export function getSavedCartItems() {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw || raw === 'undefined' || raw === 'null') return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch {
@@ -127,7 +127,9 @@ export function getSavedCartItems() {
 export function saveCartItems(items) {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    if (Array.isArray(items)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
   } catch (e) {
     console.error('Failed to persist cart items session:', e);
   }
@@ -247,10 +249,12 @@ export async function addProductToEcwidCart(product, quantity = 1, options = {})
   await ensureEcwidLoaded();
 
   // 1. Sync with window.Ecwid.Cart if available
-  if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.addProduct === 'function') {
+  const rawId = product.ecwidId || product.productId || product.id;
+  const numericId = Number(rawId);
+  if (!isNaN(numericId) && typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.addProduct === 'function') {
     try {
       const ecwidProductPayload = {
-        id: Number(product.id),
+        id: numericId,
         quantity: Math.max(1, Number(quantity)),
         options: options && Object.keys(options).length > 0 ? options : undefined
       };
@@ -279,8 +283,9 @@ export async function addProductToEcwidCart(product, quantity = 1, options = {})
   } else {
     const newItem = {
       itemKey,
-      productId: Number(product.id),
-      id: Number(product.id),
+      productId: !isNaN(numericId) ? numericId : product.id,
+      ecwidId: !isNaN(numericId) ? String(numericId) : product.ecwidId,
+      id: product.id,
       name: product.name,
       price: Number(product.price || 0),
       originalPrice: Number(product.originalPrice || product.compareToPrice || product.price || 0),
@@ -382,15 +387,17 @@ export async function clearEcwidCart() {
 
 /**
  * Synchronize all current items directly to the Ecwid Storefront Cart session
+ * Safe non-destructive sync that checks cart contents before adding, avoiding
+ * ClearCheckoutMutation race conditions during checkout.
  */
 export async function syncCartToEcwidStorefront(items) {
   if (typeof window === 'undefined') return;
 
   return new Promise((resolve) => {
-    // Safety timeout: Never let storefront sync block the checkout flow for more than 500ms
+    // Safety timeout: Never let storefront sync block the checkout flow for more than 600ms
     const safetyTimer = setTimeout(() => {
       resolve();
-    }, 500);
+    }, 600);
 
     const safeDone = () => {
       clearTimeout(safetyTimer);
@@ -403,31 +410,52 @@ export async function syncCartToEcwidStorefront(items) {
         return;
       }
 
-      if (typeof window.Ecwid.Cart.clear === 'function') {
-        window.Ecwid.Cart.clear(() => {
-          if (!items || items.length === 0) {
-            safeDone();
-            return;
-          }
+      // Check current Ecwid Cart state before modifying anything
+      if (typeof window.Ecwid.Cart.get === 'function') {
+        window.Ecwid.Cart.get((currentCart) => {
+          try {
+            const existingProducts = currentCart?.products || [];
 
-          let remaining = items.length;
-          const onDone = () => {
-            remaining--;
-            if (remaining <= 0) safeDone();
-          };
-
-          items.forEach((it) => {
-            try {
-              window.Ecwid.Cart.addProduct({
-                id: Number(it.productId || it.id),
-                quantity: Math.max(1, Number(it.quantity || 1)),
-                options: it.options && Object.keys(it.options).length > 0 ? it.options : undefined
-              }, () => onDone());
-            } catch (addErr) {
-              console.warn('Ecwid Cart.addProduct error during sync:', addErr);
-              onDone();
+            // If Ecwid cart already has items, do NOT call Cart.clear() as it destroys
+            // active checkout transactions and triggers Relay ClearCheckoutMutation crashes
+            if (existingProducts.length > 0) {
+              safeDone();
+              return;
             }
-          });
+
+            // If Ecwid cart is empty and we have local items, add them safely
+            if (!items || items.length === 0) {
+              safeDone();
+              return;
+            }
+
+            let remaining = items.length;
+            const onDone = () => {
+              remaining--;
+              if (remaining <= 0) safeDone();
+            };
+
+            items.forEach((it) => {
+              try {
+                const numericId = Number(it.ecwidId || it.productId || it.id);
+                if (isNaN(numericId)) {
+                  onDone();
+                  return;
+                }
+                window.Ecwid.Cart.addProduct({
+                  id: numericId,
+                  quantity: Math.max(1, Number(it.quantity || 1)),
+                  options: it.options && Object.keys(it.options).length > 0 ? it.options : undefined
+                }, () => onDone());
+              } catch (addErr) {
+                console.warn('Ecwid Cart.addProduct error during sync:', addErr);
+                onDone();
+              }
+            });
+          } catch (getErr) {
+            console.warn('Error reading Ecwid cart during sync:', getErr);
+            safeDone();
+          }
         });
       } else {
         safeDone();

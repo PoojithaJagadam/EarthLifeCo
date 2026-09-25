@@ -128,7 +128,8 @@ function getSessionCache(key) {
   try {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const item = window.sessionStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      if (!item || item === 'undefined' || item === 'null') return null;
+      return JSON.parse(item);
     }
   } catch {
     return null;
@@ -138,8 +139,11 @@ function getSessionCache(key) {
 
 function setSessionCache(key, data) {
   try {
-    if (typeof window !== 'undefined' && window.sessionStorage && data) {
-      window.sessionStorage.setItem(key, JSON.stringify(data));
+    if (typeof window !== 'undefined' && window.sessionStorage && data !== undefined && data !== null) {
+      const serialized = JSON.stringify(data);
+      if (serialized && serialized !== 'undefined') {
+        window.sessionStorage.setItem(key, serialized);
+      }
     }
   } catch {
     // Ignore storage quota errors
