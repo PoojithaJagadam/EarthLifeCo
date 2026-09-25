@@ -13,6 +13,9 @@ import Account from './pages/Account/Account';
 import ProductDetails from './pages/ProductDetails/ProductDetails';
 import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
+import RefundPolicy from './pages/RefundPolicy/RefundPolicy';
 
 // Context
 import { CartProvider } from './context/CartContext';
@@ -44,6 +47,9 @@ function App() {
               <Route path="/account" element={<Account />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
             </Routes>
           </main>
           <Footer />

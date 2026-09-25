@@ -7,8 +7,8 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.3fr 0.9fr 1.1fr 0.9fr 1.8fr;
-  gap: 36px;
+  grid-template-columns: 1.2fr 0.85fr 1fr 0.85fr 1.15fr 1.6fr;
+  gap: 28px;
   padding-bottom: 48px;
 }
 
@@ -193,7 +193,7 @@
 }
 
 /* Responsive */
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 32px;
