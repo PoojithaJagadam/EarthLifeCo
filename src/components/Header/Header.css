@@ -68,7 +68,7 @@
 
 .header-actions {
   display: flex;
-  gap: var(--spacing-md, 1rem);
+  gap: 0.25rem; /* Reduced from 1rem */
   align-items: center;
 }
 

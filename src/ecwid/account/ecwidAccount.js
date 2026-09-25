@@ -16,7 +16,7 @@ export function getCurrentEcwidCustomer() {
 
   try {
     // 1. Try Ecwid.Customer.get()
-    if (window.Ecwid.Customer && typeof window.Ecwid.Customer.get === 'function') {
+    if (window.Ecwid && window.Ecwid.Customer && typeof window.Ecwid.Customer.get === 'function') {
       const cust = window.Ecwid.Customer.get();
       if (cust && (cust.email || cust.id)) {
         return normalizeCustomerData(cust);
@@ -24,7 +24,7 @@ export function getCurrentEcwidCustomer() {
     }
 
     // 2. Try Ecwid.getProfile()
-    if (typeof window.Ecwid.getProfile === 'function') {
+    if (window.Ecwid && typeof window.Ecwid.getProfile === 'function') {
       const prof = window.Ecwid.getProfile();
       if (prof && (prof.email || prof.id)) {
         return normalizeCustomerData(prof);
@@ -32,7 +32,7 @@ export function getCurrentEcwidCustomer() {
     }
 
     // 3. Try Ecwid.getOwnerProfile()
-    if (typeof window.Ecwid.getOwnerProfile === 'function') {
+    if (window.Ecwid && typeof window.Ecwid.getOwnerProfile === 'function') {
       const owner = window.Ecwid.getOwnerProfile();
       if (owner && (owner.email || owner.id)) {
         return normalizeCustomerData(owner);

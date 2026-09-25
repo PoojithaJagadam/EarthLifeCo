@@ -269,6 +269,14 @@ export default function Orders() {
                     <RotateCcw size={15} className={isReordering ? 'spin-icon' : ''} />
                     <span>{isReordering ? 'Adding to Cart...' : 'Buy again'}</span>
                   </button>
+                  
+                  {/* FIX 3: Request Cancellation */}
+                  <Link
+                    to={`/cancellation-request?orderId=${order.id}`}
+                    className="order-action-btn toggle-btn"
+                  >
+                    Request Cancellation
+                  </Link>
                 </div>
               </div>
             );

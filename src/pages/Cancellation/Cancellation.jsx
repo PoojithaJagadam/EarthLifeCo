@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import './Cancellation.css';
 
 const Cancellation = () => {
+  const [searchParams] = useSearchParams();
+  const orderIdParam = searchParams.get('orderId') || '';
+
   const [formData, setFormData] = useState({
-    orderId: '',
+    orderId: orderIdParam,
     customerName: '',
     customerEmail: '',
     reason: ''
@@ -16,32 +19,21 @@ const Cancellation = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus('loading');
     
-    try {
-      const endpoint = (import.meta.env.VITE_API_BASE_URL || '') + '/api/cancellation-request';
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setStatus('success');
-      } else {
-        setStatus('error');
-        setErrorMessage(data.error || 'Something went wrong.');
-      }
-    } catch {
-      setStatus('error');
-      setErrorMessage('Network error. Please try again later.');
-    }
+    const subject = `Cancellation Request - Order ${formData.orderId}`;
+    const body = `Order ID: ${formData.orderId}
+Full Name: ${formData.customerName}
+Email: ${formData.customerEmail}
+Reason for Cancellation: ${formData.reason}
+
+Please review my cancellation request.`;
+
+    const mailtoLink = `mailto:support@earthlifeco.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    window.location.href = mailtoLink;
+    setStatus('success');
   };
 
   return (
@@ -56,16 +48,16 @@ const Cancellation = () => {
         {status === 'success' ? (
           <div className="cancellation-success">
             <div className="success-icon">✓</div>
-            <h2>Request Submitted</h2>
-            <p>Your cancellation request for order <strong>{formData.orderId}</strong> has been sent to our team.</p>
-            <p>We will review the order status in our system. If the order has not been processed or shipped yet, we will cancel it and initiate a refund. You will receive an email update shortly.</p>
+            <h2>Request Prepared</h2>
+            <p>Your cancellation request for order <strong>{formData.orderId}</strong> has been prepared in your email client.</p>
+            <p>EarthLife will review your request and contact you.</p>
             <Link to="/store" className="btn btn-primary mt-2">Return to Store</Link>
           </div>
         ) : (
           <div className="cancellation-form-wrapper">
             <p className="mb-3">
               Please note: Submitting this request <strong>does not</strong> instantly cancel your order. 
-              Our support team will review your request. If the order is already processed or shipped, cancellation may not be available.
+              Our support team will review your request.
             </p>
             
             <form onSubmit={handleSubmit} className="cancellation-form">
@@ -117,18 +109,21 @@ const Cancellation = () => {
                 ></textarea>
               </div>
               
-              {status === 'error' && (
-                <div className="error-message mb-2">{errorMessage}</div>
-              )}
-              
-              <button 
-                type="submit" 
-                className="btn btn-primary" 
-                disabled={status === 'loading'}
-                style={{ width: '100%' }}
-              >
-                {status === 'loading' ? 'Submitting...' : 'Submit Cancellation Request'}
-              </button>
+                  <div className="cancellation-buttons">
+                    <button 
+                      type="button" 
+                      className="el-button el-button--secondary" 
+                      onClick={() => window.location.href='/refund-policy'}
+                    >
+                      View Refund & Return Policy
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="el-button el-button--primary"
+                    >
+                      Submit Cancellation Request
+                    </button>
+                  </div>
             </form>
           </div>
         )}

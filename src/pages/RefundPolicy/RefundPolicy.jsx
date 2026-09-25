@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../../components/UI/Container/Container';
 import '../Legal/LegalPage.css';
+import { RandomLetterSwap } from '../../components/UI/RandomLetterSwap/RandomLetterSwap';
 
 const RefundPolicy = () => {
   useEffect(() => {
@@ -83,7 +84,7 @@ const RefundPolicy = () => {
 
           <h2>6. Order Cancellations</h2>
           <p>
-            Orders can be cancelled before they are shipped by contacting us immediately at <a href="mailto:support@earthlifeco.com" className="legal-email-link">support@earthlifeco.com</a> or via Whats App.
+            Orders can be cancelled before they are shipped by <Link to="/cancellation-request" className="legal-email-link">submitting a cancellation request</Link> or contacting us immediately at <a href="mailto:support@earthlifeco.com" className="legal-email-link">support@earthlifeco.com</a> or via Whats App.
           </p>
           <p>Once an order has been shipped, it cannot be cancelled, but our standard return process will apply upon delivery.</p>
 
@@ -92,6 +93,11 @@ const RefundPolicy = () => {
           <div className="legal-contact-box">
             <p><strong>EarthLife Co.</strong></p>
             <p>Email: <a href="mailto:support@earthlifeco.com" className="legal-email-link">support@earthlifeco.com</a></p>
+          </div>
+          <div style={{ marginTop: '1.5rem' }}>
+            <Link to="/cancellation-request" className="el-button el-button--primary">
+              <RandomLetterSwap text="Proceed for Order Cancellation" />
+            </Link>
           </div>
         </div>
       </div>

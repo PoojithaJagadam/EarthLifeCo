@@ -48,6 +48,18 @@
   border-color: var(--color-primary);
 }
 
+.cancellation-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 600px) {
+  .cancellation-buttons {
+    flex-direction: column;
+  }
+}
+
 .cancellation-success {
   text-align: center;
   padding: var(--spacing-xl) 0;

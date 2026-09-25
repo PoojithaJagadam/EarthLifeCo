@@ -41,6 +41,8 @@
 /* On parent link hover or focus: roll letters up smoothly */
 .nav-links a:hover .letter-swap-char,
 .nav-links a:focus-visible .letter-swap-char,
+.el-button:hover .letter-swap-char,
+.el-button:focus-visible .letter-swap-char,
 .letter-swap-wrapper.is-hovered .letter-swap-char {
   transform: translateY(-100%);
 }

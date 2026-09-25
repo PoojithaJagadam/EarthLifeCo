@@ -1036,6 +1036,12 @@ const Account = () => {
                   </div>
                 </div>
 
+                <div style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: '#F8F6F0', borderRadius: '8px', border: '1px solid #EBE7DF', textAlign: 'center' }}>
+                  <h3 style={{ margin: '0 0 0.5rem 0', color: '#1E3A2B' }}>Need help with an order?</h3>
+                  <p style={{ margin: '0 0 1.25rem 0', color: '#4B6354' }}>If your order has not shipped yet, you can submit a cancellation request.</p>
+                  <Link to="/cancellation-request" className="btn btn-primary">Request Order Cancellation</Link>
+                </div>
+
                 <div className="ecwid-orders-wrapper">
                   <EcwidStore defaultPage="account/orders" />
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Search, User, ShoppingCart, Menu, X, ArrowRight } from 'lucide-react';
+import { Search, User, ShoppingCart, Menu, X, ArrowRight, HelpCircle } from 'lucide-react';
 import Container from '../UI/Container/Container';
 import logoImg from '../../assets/logo.png';
 import RandomLetterSwap from '../UI/RandomLetterSwap/RandomLetterSwap';
@@ -12,6 +12,7 @@ const Header = () => {
   const { cartCount } = useCart();
   const { isLoggedIn, customer } = useEcwidAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
   const location = useLocation();
   const [prevPath, setPrevPath] = useState(location.pathname);
 
@@ -78,6 +79,17 @@ const Header = () => {
           <Link to="/store#!/~/search" className="icon-btn search-btn" aria-label="Search" title="Search">
             <Search size={20} />
           </Link>
+          <div className="support-dropdown" style={{position: 'relative'}}>
+            <button className="icon-btn support-btn" title="Support" onClick={() => setIsSupportOpen(!isSupportOpen)}>
+              <HelpCircle size={20} />
+            </button>
+            {isSupportOpen && (
+              <div className="support-menu" style={{position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #ddd', padding: '10px', borderRadius: '8px', zIndex: 10}} onClick={() => setIsSupportOpen(false)}>
+                <Link to="/cancellation-request" style={{display: 'block', padding: '5px 0', textDecoration: 'none', color: 'black'}}>Cancel Order</Link>
+                <Link to="/contact" style={{display: 'block', padding: '5px 0', textDecoration: 'none', color: 'black'}}>Contact Us</Link>
+              </div>
+            )}
+          </div>
           <Link 
             to="/account" 
             className="icon-btn account-btn" 
