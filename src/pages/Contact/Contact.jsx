@@ -5,8 +5,7 @@ import {
   Truck, 
   RotateCcw, 
   Leaf, 
-  ArrowRight, 
-  MessageCircle 
+  ArrowRight 
 } from 'lucide-react';
 import Container from '../../components/UI/Container/Container';
 import heroLeafImg from '../../assets/hero_leaf_transparent.png';
@@ -29,12 +28,19 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Build WhatsApp message text
-    const text = `Hello EarthLife Co.,%0A*Name:* ${encodeURIComponent(formData.fullName)}%0A*Email:* ${encodeURIComponent(formData.email)}%0A*Subject:* ${encodeURIComponent(formData.subject)}%0A*Message:* ${encodeURIComponent(formData.message)}`;
-    
-    // Fallback or open WhatsApp in new tab
-    const whatsappUrl = `https://wa.me/919876543210?text=${text}`;
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    const params = [];
+    if (formData.subject) {
+      params.push(`subject=${encodeURIComponent(formData.subject)}`);
+    }
+    const bodyParts = [];
+    if (formData.fullName) bodyParts.push(`Name: ${formData.fullName}`);
+    if (formData.email) bodyParts.push(`Email: ${formData.email}`);
+    if (formData.message) bodyParts.push(`Message: ${formData.message}`);
+    if (bodyParts.length > 0) {
+      params.push(`body=${encodeURIComponent(bodyParts.join('\n'))}`);
+    }
+    const query = params.length > 0 ? `?${params.join('&')}` : '';
+    window.location.href = `mailto:support@earthlifeco.com${query}`;
     
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
@@ -169,11 +175,17 @@ const Contact = () => {
                 
                 {submitted && (
                   <div className="contact-success-alert">
-                    Thank you! Opening WhatsApp to send your message...
+                    Thank you! Opening your email client to send your message...
                   </div>
                 )}
 
-                <form className="contact-styled-form" onSubmit={handleSubmit}>
+                <form 
+                  className="contact-styled-form" 
+                  action="mailto:support@earthlifeco.com"
+                  method="post"
+                  encType="text/plain"
+                  onSubmit={handleSubmit}
+                >
                   <div className="form-group-item">
                     <label htmlFor="fullName" className="form-field-label">
                       Full Name <span className="required-star">*</span>
@@ -238,9 +250,13 @@ const Contact = () => {
                     ></textarea>
                   </div>
 
-                  <button type="submit" className="contact-whatsapp-btn">
-                    <MessageCircle size={20} className="whatsapp-icon" />
-                    <span>Send Message via WhatsApp</span>
+                  <button 
+                    type="submit" 
+                    formAction="mailto:support@earthlifeco.com"
+                    className="contact-whatsapp-btn"
+                  >
+                    <Mail size={20} className="whatsapp-icon" />
+                    <span>Send Message via Email</span>
                     <ArrowRight size={18} />
                   </button>
 
