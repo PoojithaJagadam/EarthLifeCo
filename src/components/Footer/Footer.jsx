@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Container from '../UI/Container/Container';
+import logoImg from '../../assets/logo.png';
+import facebookIcon from '../../assets/facebook.png';
+import instagramIcon from '../../assets/instagram.png';
+import './Footer.css';
+
+const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setTimeout(() => {
+        setSubscribed(false);
+        setEmail('');
+      }, 3500);
+    }
+  };
+
+  return (
+    <footer className="footer" id="app-footer">
+      <Container className="footer-grid">
+        {/* Column 1: Brand & Socials */}
+        <div className="footer-col footer-col-brand">
+          <div className="footer-logo">
+            <Link to="/" className="footer-logo-link">
+              <img src={logoImg} alt="EarthLife Co." className="footer-logo-img" />
+            </Link>
+          </div>
+          <div className="footer-social-icons">
+            <a href="https://www.instagram.com/earth_lifeco" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="footer-social-btn" title="Instagram">
+              <img src={instagramIcon} alt="Instagram" style={{width: '16px', height: '16px'}} />
+            </a>
+            <a href="https://www.facebook.com/share/1DWfDgkb9E/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="footer-social-btn" title="Facebook">
+              <img src={facebookIcon} alt="Facebook" style={{width: '16px', height: '16px'}} />
+            </a>
+          </div>
+        </div>
+        
+        {/* Column 2: Shop */}
+        <div className="footer-col">
+          <h3 className="footer-col-heading">Shop</h3>
+          <ul className="footer-links-list">
+            <li><Link to="/store">All Products</Link></li>
+            <li><Link to="/store?category=neem">Neem Products</Link></li>
+            <li><Link to="/store?category=bamboo">Bamboo Products</Link></li>
+            <li><Link to="/store?category=coconut-coir">Coconut Coir Products</Link></li>
+            <li><Link to="/store">Gift Sets</Link></li>
+          </ul>
+        </div>
+        
+        {/* Column 3: Customer Care */}
+        <div className="footer-col">
+          <h3 className="footer-col-heading">Customer Care</h3>
+          <ul className="footer-links-list">
+            <li><Link to="/account">My Account</Link></li>
+            <li><Link to="/account#!/~/account/orders">Track Order</Link></li>
+            <li><Link to="/cancellation-request">Returns & Refunds</Link></li>
+            <li><Link to="/faqs">Shipping Information</Link></li>
+            <li><Link to="/faqs">FAQs</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
+          </ul>
+        </div>
+        
+        {/* Column 4: Our Story */}
+        <div className="footer-col">
+          <h3 className="footer-col-heading">Our Story</h3>
+          <ul className="footer-links-list">
+            <li><Link to="/about">About EarthLife Co.</Link></li>
+            <li><Link to="/why-natural">Why Natural?</Link></li>
+            <li><Link to="/about">Blog</Link></li>
+          </ul>
+        </div>
+
+        {/* Column 5: Legal & Policies */}
+        <div className="footer-col">
+          <h3 className="footer-col-heading">LEGAL &amp; POLICIES</h3>
+          <ul className="footer-links-list">
+            <li><Link to="/terms-and-conditions">Terms &amp; Conditions</Link></li>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/refund-policy">Refund &amp; Return Policy</Link></li>
+          </ul>
+        </div>
+
+        {/* Column 6: Subscribe to our newsletter */}
+        <div className="footer-col footer-col-subscribe">
+          <h3 className="footer-col-heading">Subscribe to our newsletter</h3>
+          <p className="subscribe-desc">
+            Get updates on new products, offers and sustainable living tips.
+          </p>
+          <form className="newsletter-form" onSubmit={handleSubscribe}>
+            <input 
+              type="email" 
+              placeholder="Enter your email address" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+              className="newsletter-input"
+            />
+            <button type="submit" className="newsletter-submit-btn">
+              {subscribed ? 'Subscribed!' : 'Subscribe'}
+            </button>
+          </form>
+          {subscribed && (
+            <p className="newsletter-success-note">
+              🌱 Thank you for subscribing to EarthLife Co.!
+            </p>
+          )}
+        </div>
+      </Container>
+      
+      {/* Footer Bottom Bar */}
+      <div className="footer-bottom">
+        <Container className="bottom-flex">
+          <p className="copyright-text">© 2025 EarthLife Co. All rights reserved.</p>
+          <div className="footer-legal">
+            <Link to="/privacy-policy">Privacy Policy</Link>
+            <span className="legal-divider">|</span>
+            <Link to="/terms-and-conditions">Terms &amp; Conditions</Link>
+            <span className="legal-divider">|</span>
+            <Link to="/refund-policy">Refund &amp; Return Policy</Link>
+            <span className="legal-divider">|</span>
+            <Link to="/contact">Contact Us</Link>
+          </div>
+        </Container>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

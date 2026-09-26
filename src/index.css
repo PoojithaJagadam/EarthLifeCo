@@ -1,0 +1,20 @@
+/* 
+ * EarthLife Co. Main Stylesheet 
+ * Follows Phase 1 Architecture: Centralized Tokens + Reusable Globals + Isolated Overrides
+ */
+
+/* 1. Design System Tokens */
+@import './styles/tokens.css';
+
+/* 2. Global Resets and Typography */
+@import './styles/globals.css';
+
+/* 3. Responsive Utilities */
+@import './styles/responsive.css';
+
+/* 4. Ecwid Commerce Overrides */
+@import './ecwid/styles/overrides.css';
+
+/* 5. Botanical Glow Micro-Interactions */
+@import './components/UI/BotanicalGlow/BotanicalGlow.css';
+

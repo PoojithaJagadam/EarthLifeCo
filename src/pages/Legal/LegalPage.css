@@ -1,0 +1,230 @@
+/* 
+ * EarthLife Co. - Legal Pages Stylesheet
+ * Responsive, highly-readable layout matching EarthLife design tokens
+ */
+
+.legal-page-wrapper {
+  background-color: #FAF9F6;
+  min-height: calc(100vh - 200px);
+  padding-bottom: 5rem;
+}
+
+/* Breadcrumb Bar */
+.legal-breadcrumb-bar {
+  background-color: #FAF9F6;
+  border-bottom: 1px solid rgba(44, 74, 59, 0.08);
+  padding: 1rem 0;
+}
+
+.legal-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--color-text-muted, #666A67);
+  flex-wrap: wrap;
+}
+
+.legal-breadcrumb a {
+  color: var(--color-text-muted, #666A67);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.legal-breadcrumb a:hover {
+  color: var(--color-primary, #2C4A3B);
+}
+
+.legal-breadcrumb .breadcrumb-separator {
+  color: #C0C5C2;
+}
+
+.legal-breadcrumb .breadcrumb-active {
+  color: var(--color-primary, #2C4A3B);
+  font-weight: 600;
+}
+
+/* Hero Header */
+.legal-hero-section {
+  background: linear-gradient(180deg, #F4EBDC 0%, #FAF9F6 100%);
+  padding: 3.5rem 1rem 2.5rem;
+  text-align: center;
+}
+
+.legal-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(44, 74, 59, 0.08);
+  color: var(--color-primary, #2C4A3B);
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.legal-hero-title {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  color: var(--color-primary, #1E3A2B);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.2;
+}
+
+.legal-hero-subtitle {
+  color: var(--color-text-muted, #666A67);
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Main Content Container & Card */
+.legal-card-container {
+  max-width: 880px;
+  margin: 2rem auto 0;
+  padding: 0 1.25rem;
+}
+
+.legal-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border, #E8E5E1);
+  border-radius: var(--radius-lg, 12px);
+  padding: 3.5rem 3.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Typography & Content Layout */
+.legal-card p {
+  color: #2D302E;
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+
+.legal-card p.legal-intro-p {
+  font-size: 1.05rem;
+  color: #1E3A2B;
+  line-height: 1.8;
+}
+
+.legal-card h2 {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  color: #1E3A2B;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #F0EEE9;
+}
+
+.legal-card h3 {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  color: #2C4A3B;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 1.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.legal-card ul,
+.legal-card ol {
+  margin: 0 0 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.legal-card ul {
+  list-style-type: disc;
+}
+
+.legal-card ol {
+  list-style-type: decimal;
+}
+
+.legal-card li {
+  color: #2D302E;
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 0.6rem;
+}
+
+.legal-card li strong {
+  color: #1E3A2B;
+}
+
+/* Clickable Support Email */
+.legal-email-link {
+  color: #2C4A3B;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.legal-email-link:hover {
+  color: #122B20;
+}
+
+/* Contact Info Box */
+.legal-contact-box {
+  background-color: #FAF8F5;
+  border-left: 3px solid #2C4A3B;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+}
+
+.legal-contact-box p {
+  margin-bottom: 0.35rem;
+}
+
+.legal-contact-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .legal-hero-section {
+    padding: 2.5rem 1rem 1.75rem;
+  }
+
+  .legal-hero-title {
+    font-size: 2rem;
+  }
+
+  .legal-card {
+    padding: 2rem 1.5rem;
+    border-radius: 8px;
+  }
+
+  .legal-card p,
+  .legal-card li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .legal-card h2 {
+    font-size: 1.2rem;
+    margin-top: 1.75rem;
+  }
+
+  .legal-card h3 {
+    font-size: 1.05rem;
+    margin-top: 1.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .legal-card {
+    padding: 1.5rem 1.15rem;
+  }
+}

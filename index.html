@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EarthLife Co.</title>
+    <meta name="description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
+    <meta property="og:title" content="EarthLife Co." />
+    <meta property="og:description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
+    <!-- Suppress benign ResizeObserver notifications from iframe/storefront embeds -->
+    <script>
+      (function() {
+        const isResizeObserverError = (msg) => {
+          return typeof msg === 'string' && (
+            msg.includes('ResizeObserver loop completed with undelivered notifications') ||
+            msg.includes('ResizeObserver loop limit exceeded')
+          );
+        };
+
+        window.addEventListener('error', function(event) {
+          if (event && (isResizeObserverError(event.message) || isResizeObserverError(event.error?.message))) {
+            event.stopImmediatePropagation();
+            event.stopPropagation();
+            event.preventDefault();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && (isResizeObserverError(event.reason?.message) || isResizeObserverError(event.reason))) {
+            event.stopImmediatePropagation();
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }, true);
+      })();
+    </script>
+    <!-- Google Fonts: Playfair Display for editorial heading, Outfit for brand headings, Inter for body text, Caveat for organic accents -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

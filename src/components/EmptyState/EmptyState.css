@@ -1,0 +1,61 @@
+.ecwid-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  background-color: #FAF8F5;
+  border-radius: 12px;
+  border: 1px dashed #E0D7C9;
+  margin: 1.5rem 0;
+}
+
+.ecwid-empty-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #F4EBDC;
+  color: #2C4A3B;
+  margin-bottom: 1rem;
+}
+
+.ecwid-empty-title {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1A3324;
+  margin: 0 0 0.5rem;
+}
+
+.ecwid-empty-message {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: #6C7A70;
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.ecwid-empty-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  border: none;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.ecwid-empty-action-btn:hover {
+  background-color: #14281E;
+}

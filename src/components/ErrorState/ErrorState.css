@@ -1,0 +1,64 @@
+.ecwid-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  background-color: var(--color-bg-secondary, #F4F1EA);
+  border-radius: 16px;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  margin: 2rem auto;
+  max-width: 560px;
+}
+
+.ecwid-error-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(220, 53, 69, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.ecwid-error-icon {
+  color: #C53030;
+}
+
+.ecwid-error-title {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-text, #1E2822);
+  margin: 0 0 0.5rem 0;
+}
+
+.ecwid-error-message {
+  font-family: var(--font-body, inherit);
+  color: var(--color-text-muted, #6B7A72);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+}
+
+.ecwid-error-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary, #2B4C38);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ecwid-error-retry-btn:hover {
+  background-color: var(--color-primary-dark, #1E3728);
+  transform: translateY(-1px);
+}

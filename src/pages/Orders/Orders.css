@@ -1,0 +1,374 @@
+.orders-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: inherit;
+  color: #1F2937;
+}
+
+.orders-header {
+  margin-bottom: 2rem;
+}
+
+.orders-header h1 {
+  font-family: var(--font-heading, 'Playfair Display', serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1E3A2B;
+  margin: 0 0 0.5rem 0;
+}
+
+.orders-header p {
+  color: #6B7280;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.orders-status-box {
+  padding: 2.5rem;
+  text-align: center;
+  color: #6B7280;
+  background-color: #F9FAFB;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+}
+
+.orders-error-box {
+  background-color: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #991B1B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.orders-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #FDFBF7;
+  border-radius: 16px;
+  border: 1px solid #EBE7DF;
+}
+
+.orders-empty-icon {
+  color: #9CA3AF;
+  margin-bottom: 1rem;
+}
+
+.orders-empty-state h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1E3A2B;
+  margin: 0 0 0.5rem 0;
+}
+
+.orders-empty-state p {
+  color: #6B7280;
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.orders-cta-btn {
+  display: inline-block;
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.orders-cta-btn:hover {
+  background-color: #2D5540;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Order Card */
+.order-card {
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background-color: #FFFFFF;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card--expanded {
+  border-color: #1E3A2B;
+  box-shadow: 0 4px 12px rgba(30, 58, 43, 0.08);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #F3F4F6;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.order-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.order-number {
+  font-weight: 700;
+  color: #1E3A2B;
+  font-size: 1.1rem;
+}
+
+.order-date {
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+
+.order-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+}
+
+.status-processing, .status-awaiting_processing {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.status-shipped, .status-delivered {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.status-cancelled {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.order-header-total {
+  font-weight: 700;
+  color: #1E3A2B;
+  font-size: 1.15rem;
+}
+
+/* Items Preview */
+.order-items-preview {
+  padding: 1rem 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.order-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.item-more-tag {
+  background-color: #F3F4F6;
+  color: #6B7280;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Feedback Notice */
+.order-feedback-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.feedback-success {
+  background-color: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.feedback-error {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FCA5A5;
+}
+
+/* Expanded Details */
+.order-expanded-details {
+  padding: 1.25rem 0;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.details-heading {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6B7280;
+  margin: 0 0 0.75rem 0;
+}
+
+.expanded-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.expanded-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+}
+
+.expanded-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.expanded-item-name {
+  font-weight: 600;
+  color: #1F2937;
+  font-size: 0.95rem;
+}
+
+.expanded-item-qty, .expanded-item-sku {
+  font-size: 0.8rem;
+  color: #6B7280;
+}
+
+.expanded-item-price {
+  font-weight: 600;
+  color: #1E3A2B;
+}
+
+.order-shipping-details {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #F8F6F0;
+  border-radius: 8px;
+  border: 1px solid #EBE7DF;
+}
+
+.shipping-text {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.order-totals-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  background-color: #F9FAFB;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #4B5563;
+}
+
+.breakdown-total {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #E5E7EB;
+  font-weight: 700;
+  color: #1E3A2B;
+  font-size: 1.05rem;
+}
+
+/* Action Buttons Row */
+.order-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.order-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* View Details / Hide Details Toggle Button */
+.toggle-btn {
+  background-color: #F8F6F0;
+  color: #1E3A2B;
+  border-color: #D1D5DB;
+}
+
+.toggle-btn:hover {
+  background-color: #EFECE4;
+  border-color: #1E3A2B;
+}
+
+/* Buy Again Button */
+.buy-again-btn {
+  background-color: #1E3A2B;
+  color: #FFFFFF;
+}
+
+.buy-again-btn:hover:not(:disabled) {
+  background-color: #2D5540;
+}
+
+.buy-again-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

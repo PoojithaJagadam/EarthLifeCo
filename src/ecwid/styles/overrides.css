@@ -1,0 +1,280 @@
+/* ECWID STOREFRONT AGGRESSIVE OVERRIDES */
+/* WARNING: Do not edit unless strictly necessary. These enforce the EarthLife design onto the 3rd-party widget */
+
+/* Hide default Ecwid sort by and breadcrumbs */
+.ec-store .ec-sort,
+.ec-store .ec-breadcrumbs {
+  display: none !important;
+}
+
+/* Force EarthLife typography on Ecwid components */
+.ec-store,
+.ec-store__category-page,
+.ec-size .ec-store, 
+.ec-size .ec-store .grid-product__title,
+.ec-size .ec-store .grid-product__price,
+.ec-store .product-details,
+.ec-size .ec-store .form-control--button {
+  font-family: var(--font-heading), -apple-system, sans-serif !important;
+}
+
+/* Style Ecwid Horizontal Category Menu (Tabs) */
+.ec-store .ec-category-menu {
+  display: flex !important;
+  gap: var(--spacing-md) !important;
+  justify-content: flex-start !important;
+  border-bottom: 2px solid var(--color-border) !important;
+  margin-bottom: var(--spacing-xl) !important;
+}
+.ec-store .ec-category-menu .ec-category-menu__item {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ec-store .ec-category-menu .ec-category-menu__link {
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  color: var(--color-text) !important;
+  border-bottom: 3px solid transparent !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+}
+.ec-store .ec-category-menu .ec-category-menu__item--active .ec-category-menu__link {
+  color: var(--color-primary) !important;
+  border-bottom-color: var(--color-primary) !important;
+}
+
+/* Style Ecwid Search Box */
+.ec-store .ec-search {
+  position: absolute !important;
+  right: 0 !important;
+  top: -65px !important;
+  width: 300px !important;
+}
+.ec-size .ec-store .ec-search__input {
+  border-radius: var(--radius-pill) !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 0.75rem 1.5rem 0.75rem 2.5rem !important;
+  font-size: 0.95rem !important;
+  background-color: var(--color-surface) !important;
+}
+.ecwid-custom-container {
+  position: relative;
+  margin-top: var(--spacing-xl);
+}
+
+/* Style Ecwid Product Cards */
+.ec-size .ec-store .grid-product {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  padding: 15px !important;
+}
+.ec-size .ec-store .grid-product:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Product Card Images */
+.ec-size .ec-store .grid-product__image {
+  border-radius: var(--radius-sm) !important;
+  margin-bottom: 15px !important;
+}
+
+/* Product Title & Category */
+.ec-size .ec-store .grid-product__title {
+  text-align: left !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  color: var(--color-text) !important;
+  margin-bottom: 4px !important;
+}
+.ec-size .ec-store .grid-category-title {
+  text-align: left !important;
+  font-size: 0.85rem !important;
+  color: var(--color-text-muted) !important;
+  text-transform: capitalize !important;
+}
+
+/* Price color */
+.ec-size .ec-store .grid-product__price-value {
+  color: var(--color-text) !important;
+  font-weight: 700 !important;
+  font-size: 1.2rem !important;
+  text-align: left !important;
+  display: block !important;
+  margin-bottom: 15px !important;
+}
+
+/* Style Ecwid Buttons to match EarthLife brand */
+.ec-size .ec-store .form-control--primary .form-control__button {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-inverse) !important;
+  border-radius: var(--radius-sm) !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  padding: 12px !important;
+}
+.ec-size .ec-store .form-control--primary .form-control__button:hover {
+  background-color: var(--color-primary-light) !important;
+}
+
+/* ==========================================================================
+   CHECKOUT, ACCOUNTS, & ORDERS OVERRIDES
+   ========================================================================== */
+
+/* CHECKOUT STYLING */
+.ec-size .ec-store .ec-cart-step {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+}
+.ec-size .ec-store .ec-cart-step--active .ec-cart-step__icon {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.ec-size .ec-store .ec-cart-step--done .ec-cart-step__icon {
+  background-color: var(--color-success) !important;
+  color: var(--color-primary) !important;
+}
+.ec-size .ec-store .ec-cart__button--checkout,
+.ec-size .ec-store .ec-checkout-button {
+  background-color: var(--color-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+}
+.ec-size .ec-store .ec-cart__button--checkout:hover,
+.ec-size .ec-store .ec-checkout-button:hover {
+  background-color: var(--color-primary-light) !important;
+}
+.ec-store__checkout-page {
+  background-color: var(--color-surface-hover) !important;
+  padding: 2rem !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* ACCOUNT LOGIN STYLING */
+.account-login-page .ec-size .ec-store .ec-form--signin .form-control--text,
+.account-login-page .ec-size .ec-store .ec-form--signin .form-control--password {
+  display: block !important;
+  border-radius: 8px !important;
+  border: 1px solid #D1D5DB !important;
+  padding: 0.75rem 1rem !important;
+  font-family: var(--font-body) !important;
+  font-size: 1rem !important;
+}
+.account-login-page .ec-size .ec-store .ec-form--signin .ec-form__row--actions button[type="submit"] {
+  display: inline-block !important;
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 0.85rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-family: var(--font-heading) !important;
+  border: none !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+.account-login-page .ec-size .ec-store .ec-form--signin .ec-form__row--actions button[type="submit"]:hover {
+  background-color: var(--color-primary-light) !important;
+}
+.account-login-page .ec-size .ec-store .ec-form--signin {
+  margin-top: 1rem;
+}
+.account-login-page .ec-size .ec-store .ec-form__row--sso {
+  display: block !important;
+}
+.account-login-page .ec-size .ec-store .ec-signin__title {
+  font-size: 2.5rem !important;
+  color: var(--color-primary) !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ACCOUNT DETAILS & ORDERS STYLING */
+.account-dashboard-page .ec-size .ec-store .ec-account-breadcrumbs,
+.account-dashboard-page .ec-size .ec-store .ec-account-sidebar {
+  display: none !important;
+}
+.ec-size .ec-store .ec-orders-list {
+  background-color: transparent !important;
+}
+.ec-size .ec-store .ec-orders-list__item {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.ec-size .ec-store .ec-orders-list__status--paid,
+.ec-size .ec-store .ec-orders-list__status--shipped,
+.ec-size .ec-store .ec-orders-list__status--delivered {
+  background-color: var(--color-success) !important;
+  color: var(--color-success-text) !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 0.25rem 0.75rem !important;
+  font-weight: 600 !important;
+}
+.ec-size .ec-store .ec-orders-list__status--cancelled {
+  background-color: var(--color-error) !important;
+  color: var(--color-error-text) !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 0.25rem 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+/* AUTHORIZATION WIDGET & ACCESS CODE STYLING */
+.ec-size .ec-store .authorization-widget,
+.ec-size .ec-store .ec-form--signin,
+.authorization-widget {
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+}
+
+.ec-size .ec-store .authorization-widget__submit-button,
+.ec-size .ec-store .authorization-widget__submit-code-button,
+.authorization-widget__submit-button,
+.authorization-widget__submit-code-button {
+  background-color: #1E3A2B !important;
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.ec-size .ec-store .authorization-widget__submit-button:hover,
+.ec-size .ec-store .authorization-widget__submit-code-button:hover,
+.authorization-widget__submit-button:hover,
+.authorization-widget__submit-code-button:hover {
+  background-color: #2D5540 !important;
+}
+
+.ec-size .ec-store .authorization-widget__email-field input,
+.ec-size .ec-store .authorization-widget__code-field input,
+.authorization-widget__email-field input,
+.authorization-widget__code-field input {
+  border: 1px solid #D1D5DB !important;
+  border-radius: 8px !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.95rem !important;
+}
+
+/* ECWID ADDRESS BOOK & ACCOUNT SETTINGS STYLING */
+.ec-size .ec-store .ec-address-book,
+.ec-size .ec-store .ec-account-settings {
+  font-family: var(--font-body, 'Inter', sans-serif) !important;
+}
+
+.ec-size .ec-store .ec-address-book .form-control--button,
+.ec-size .ec-store .ec-account-settings .form-control--button {
+  background-color: #1E3A2B !important;
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
