@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, Share2, Play, Pin } from 'lucide-react';
 import Container from '../UI/Container/Container';
 import logoImg from '../../assets/logo.png';
+import facebookIcon from '../../assets/facebook.png';
+import instagramIcon from '../../assets/instagram.png';
 import './Footer.css';
 
 const Footer = () => {
@@ -31,17 +32,11 @@ const Footer = () => {
             </Link>
           </div>
           <div className="footer-social-icons">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="footer-social-btn" title="Instagram">
-              <Camera size={16} />
+            <a href="https://www.instagram.com/earth_lifeco" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="footer-social-btn" title="Instagram">
+              <img src={instagramIcon} alt="Instagram" style={{width: '16px', height: '16px'}} />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="footer-social-btn" title="Facebook">
-              <Share2 size={16} />
-            </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="footer-social-btn" title="YouTube">
-              <Play size={16} />
-            </a>
-            <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" className="footer-social-btn footer-pin-btn" title="Pinterest">
-              <Pin size={16} />
+            <a href="https://www.facebook.com/share/1DWfDgkb9E/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="footer-social-btn" title="Facebook">
+              <img src={facebookIcon} alt="Facebook" style={{width: '16px', height: '16px'}} />
             </a>
           </div>
         </div>
