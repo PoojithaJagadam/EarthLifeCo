@@ -297,58 +297,60 @@ const ProductDetails = () => {
             {/* Real Ecwid Product Description & Specifications Card */}
             <div className="pd-ecwid-details-card">
               <h3 className="pd-section-heading">About This Product</h3>
-
-              {/* Real Ecwid HTML Description */}
-              {product.description ? (
-                <div 
-                  className="pd-ecwid-description" 
-                  dangerouslySetInnerHTML={{ __html: product.description }} 
-                />
-              ) : (
-                <p className="pd-short-desc">Natural handcrafted essential from EarthLife Co.</p>
-              )}
-
-              {/* Real Ecwid Specifications Grid */}
-              <div className="pd-specs-grid" style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid #ECE4D8' }}>
-                {product.sku && (
-                  <div className="pd-spec-item">
-                    <span className="pd-spec-label">SKU:</span>
-                    <span className="pd-spec-val">{product.sku}</span>
-                  </div>
+              
+              <div className="pd-ecwid-details-inner">
+                {/* Real Ecwid HTML Description */}
+                {product.description ? (
+                  <div 
+                    className="pd-ecwid-description" 
+                    dangerouslySetInnerHTML={{ __html: product.description }} 
+                  />
+                ) : (
+                  <p className="pd-short-desc">Natural handcrafted essential from EarthLife Co.</p>
                 )}
-                {product.weight && (
+
+                {/* Real Ecwid Specifications Grid */}
+                <div className="pd-specs-grid" style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid #ECE4D8' }}>
+                  {product.sku && (
+                    <div className="pd-spec-item">
+                      <span className="pd-spec-label">SKU:</span>
+                      <span className="pd-spec-val">{product.sku}</span>
+                    </div>
+                  )}
+                  {product.weight && (
+                    <div className="pd-spec-item">
+                      <span className="pd-spec-label">Weight:</span>
+                      <span className="pd-spec-val">{product.weight} kg</span>
+                    </div>
+                  )}
                   <div className="pd-spec-item">
-                    <span className="pd-spec-label">Weight:</span>
-                    <span className="pd-spec-val">{product.weight} kg</span>
+                    <span className="pd-spec-label">Availability:</span>
+                    <span className={`pd-spec-val ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
+                      {product.inStock 
+                        ? (product.unlimited 
+                            ? 'In Stock' 
+                            : `In Stock (${typeof product.quantity === 'number' ? product.quantity : 1} items)`)
+                        : 'Out of Stock'}
+                    </span>
                   </div>
-                )}
-                <div className="pd-spec-item">
-                  <span className="pd-spec-label">Availability:</span>
-                  <span className={`pd-spec-val ${product.inStock ? 'in-stock' : 'out-of-stock'}`}>
-                    {product.inStock 
-                      ? (product.unlimited 
-                          ? 'In Stock' 
-                          : `In Stock (${typeof product.quantity === 'number' ? product.quantity : 1} items)`)
-                      : 'Out of Stock'}
-                  </span>
+                  {product.categoryName && (
+                    <div className="pd-spec-item">
+                      <span className="pd-spec-label">Category:</span>
+                      <span className="pd-spec-val">{product.categoryName}</span>
+                    </div>
+                  )}
+                  {/* Real Ecwid Attributes (e.g. Brand) */}
+                  {Array.isArray(product.attributes) && product.attributes.map((attr, idx) => (
+                    <div key={idx} className="pd-spec-item">
+                      <span className="pd-spec-label">{attr.name}:</span>
+                      <span className="pd-spec-val">{attr.value}</span>
+                    </div>
+                  ))}
                 </div>
-                {product.categoryName && (
-                  <div className="pd-spec-item">
-                    <span className="pd-spec-label">Category:</span>
-                    <span className="pd-spec-val">{product.categoryName}</span>
-                  </div>
-                )}
-                {/* Real Ecwid Attributes (e.g. Brand) */}
-                {Array.isArray(product.attributes) && product.attributes.map((attr, idx) => (
-                  <div key={idx} className="pd-spec-item">
-                    <span className="pd-spec-label">{attr.name}:</span>
-                    <span className="pd-spec-val">{attr.value}</span>
-                  </div>
-                ))}
-              </div>
 
-              <div className="pd-shipping-note">
-                <span>🚚 Free Delivery on orders above ₹299 • 100% Secure Payments • Dispatched in 24–48h</span>
+                <div className="pd-shipping-note">
+                  <span>🚚 Free Delivery on orders above ₹299 • 100% Secure Payments • Dispatched in 24–48h</span>
+                </div>
               </div>
             </div>
 

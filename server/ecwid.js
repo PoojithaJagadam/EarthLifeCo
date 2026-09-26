@@ -381,26 +381,7 @@ export async function handleEcwidApi(req, res) {
     if ((normPath === '/cart/calculate' || rawPath === '/api/ecwid/cart/calculate') && (isPost || isGetOrHead)) {
       let bodyData = {};
       if (isPost) {
-        if (req.body && typeof req.body === 'object') {
-          bodyData = req.body;
-        } else {
-          bodyData = await new Promise((resolve) => {
-            let buffer = '';
-            req.on('data', chunk => { buffer += chunk; });
-            req.on('end', () => {
-              try {
-                if (!buffer || buffer.trim() === '' || buffer.trim() === 'undefined') {
-                  resolve({});
-                } else {
-                  resolve(JSON.parse(buffer));
-                }
-              } catch {
-                resolve({});
-              }
-            });
-            req.on('error', () => resolve({}));
-          });
-        }
+        bodyData = req.body || {};
       } else {
         const itemsParam = urlObj.searchParams.get('items');
         if (itemsParam) {
@@ -690,28 +671,7 @@ export async function handleEcwidApi(req, res) {
 
     // 5b. POST /api/ecwid/customer/update - Real Ecwid Customer Profile Update
     if ((normPath === '/customer/update' || rawPath === '/api/ecwid/customer/update') && isPost) {
-      let bodyData = {};
-      if (req.body && typeof req.body === 'object') {
-        bodyData = req.body;
-      } else {
-        bodyData = await new Promise((resolve) => {
-          let buffer = '';
-          req.on('data', chunk => { buffer += chunk; });
-          req.on('end', () => {
-            try {
-              if (!buffer || buffer.trim() === '' || buffer.trim() === 'undefined') {
-                resolve({});
-              } else {
-                resolve(JSON.parse(buffer));
-              }
-            } catch {
-              resolve({});
-            }
-          });
-          req.on('error', () => resolve({}));
-        });
-      }
-
+      const bodyData = req.body || {};
       const { customerId, email, name, phone, acceptsMarketing, shippingAddresses } = bodyData;
       const hasSecretToken = Boolean(process.env.ECWID_SECRET_TOKEN);
 
@@ -897,28 +857,7 @@ export async function handleEcwidApi(req, res) {
 
     // 7. POST /api/ecwid/order/create - Authoritative Ecwid Order Creation
     if ((normPath === '/order/create' || rawPath === '/api/ecwid/order/create') && isPost) {
-      let bodyData = {};
-      if (req.body && typeof req.body === 'object') {
-        bodyData = req.body;
-      } else {
-        bodyData = await new Promise((resolve) => {
-          let buffer = '';
-          req.on('data', chunk => { buffer += chunk; });
-          req.on('end', () => {
-            try {
-              if (!buffer || buffer.trim() === '' || buffer.trim() === 'undefined') {
-                resolve({});
-              } else {
-                resolve(JSON.parse(buffer));
-              }
-            } catch {
-              resolve({});
-            }
-          });
-          req.on('error', () => resolve({}));
-        });
-      }
-
+      const bodyData = req.body || {};
       const { items, customer, shippingAddress, paymentMethod, totals, orderComments } = bodyData;
 
       if (!items || !Array.isArray(items) || items.length === 0) {
