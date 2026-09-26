@@ -734,6 +734,25 @@
   border-color: #1E3A2B;
 }
 
+/* Hide HelpfulCrowd "Independently collected by" branding logo on Home page */
+.testimonials-section .hc-review-slider-show-branding,
+.testimonials-section .hc-powered-by,
+.testimonials-section .hc-powered-by__pretext,
+.testimonials-section .hc-logo,
+.testimonials-section [class*="hc-powered-by"],
+.testimonials-section [class*="hc-review-slider-show-branding"],
+.testimonials-section a[href*="helpfulcrowd.com"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
 .testimonial-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

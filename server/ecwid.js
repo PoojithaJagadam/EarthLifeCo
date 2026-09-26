@@ -119,11 +119,27 @@ export function normalizeProduct(raw, categories = []) {
 }
 
 async function fetchWithRetry(url, options = {}, retries = 2) {
+  const mergedHeaders = {
+    'Accept': 'application/json',
+    ...(options.headers || {})
+  };
+
+  // If token is in scope or in env, attach Authorization Bearer header
+  const { token } = getEcwidConfig();
+  if (token && !mergedHeaders['Authorization']) {
+    mergedHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
+  const finalOptions = {
+    ...options,
+    headers: mergedHeaders
+  };
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const res = await fetch(url, { ...options, signal: controller.signal });
+      const res = await fetch(url, { ...finalOptions, signal: controller.signal });
       clearTimeout(timeoutId);
       return res;
     } catch (err) {

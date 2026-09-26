@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import './Cancellation.css';
 
@@ -13,7 +13,6 @@ const Cancellation = () => {
     reason: ''
   });
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

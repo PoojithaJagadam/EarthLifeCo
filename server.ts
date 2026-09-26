@@ -1,8 +1,10 @@
+import 'dotenv/config';
 import http from 'http';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import cors from 'cors';
 import { handleEcwidApi } from './server/ecwid.js';
+import { handleHelpfulCrowdApi } from './server/helpfulcrowd.js';
 
 async function startServer() {
   const app = express();
@@ -46,6 +48,21 @@ async function startServer() {
       if (!res.headersSent) {
         console.log(`[API DEBUG] STATUS: 500`);
         console.log(`[API DEBUG] CONTENT-TYPE: application/json`);
+        res.status(500).json({ error: 'Internal API error' });
+      }
+    }
+  });
+
+  // HelpfulCrowd API Proxy
+  app.use('/api/helpfulcrowd', async (req, res) => {
+    try {
+      const handled = await handleHelpfulCrowdApi(req, res);
+      if (!handled && !res.headersSent) {
+        res.status(404).json({ error: 'HelpfulCrowd route not found', path: req.originalUrl });
+      }
+    } catch (err) {
+      console.error('HelpfulCrowd proxy error:', err);
+      if (!res.headersSent) {
         res.status(500).json({ error: 'Internal API error' });
       }
     }

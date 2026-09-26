@@ -4,6 +4,8 @@
  * Fallback: Direct Ecwid REST API using public storefront token (CORS-enabled read-only token)
  */
 
+import { ALL_PRODUCTS, CATEGORIES } from '../../data/products';
+
 const ECWID_STORE_ID = import.meta.env.VITE_ECWID_STORE_ID || '141633269';
 // Official public read-only storefront token for store 141633269
 const ECWID_PUBLIC_TOKEN = 'public_19bKp94DXNgXAenj9iRmy7FicBjUMQHH';
@@ -16,6 +18,10 @@ function getApiBaseUrl() {
     return '';
   }
   return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+}
+
+export function getSafeApiBase() {
+  return getApiBaseUrl();
 }
 
 /**
@@ -267,11 +273,32 @@ export async function fetchEcwidProducts(options = {}) {
   } catch (directError) {
     console.warn('Direct Ecwid API fetch error:', directError.message);
 
-    // 3. Last resilient resort: check session cache
+    // 3. Last resilient resort: check session cache or local fallback catalog
     const cached = getSessionCache(CACHE_KEY_PRODUCTS);
     if (cached && Array.isArray(cached.items) && cached.items.length > 0) {
       console.info('Serving cached Ecwid catalog due to temporary network error.');
       return cached;
+    }
+
+    if (Array.isArray(ALL_PRODUCTS) && ALL_PRODUCTS.length > 0) {
+      console.info('Serving local EarthLife fallback catalog.');
+      let filtered = [...ALL_PRODUCTS];
+      if (resolvedCat) {
+        filtered = filtered.filter(p => String(p.categoryId) === String(resolvedCat) || (Array.isArray(p.categoryIds) && p.categoryIds.includes(Number(resolvedCat))));
+      }
+      if (options.keyword) {
+        const kw = options.keyword.toLowerCase();
+        filtered = filtered.filter(p => (p.name && p.name.toLowerCase().includes(kw)) || (p.description && p.description.toLowerCase().includes(kw)));
+      }
+      return {
+        storeId: ECWID_STORE_ID,
+        source: 'local_fallback',
+        total: filtered.length,
+        count: filtered.length,
+        offset: options.offset || 0,
+        limit: options.limit || 100,
+        items: filtered
+      };
     }
 
     throw new Error('Unable to load live Ecwid catalog. Please check your network connection.');
@@ -352,6 +379,13 @@ export async function fetchEcwidProductById(idOrSlug) {
       if (matchCached) return matchCached;
     }
 
+    const localMatch = ALL_PRODUCTS.find(p =>
+      String(p.id) === String(idOrSlug) ||
+      String(p.ecwidId) === String(idOrSlug) ||
+      (p.sku && p.sku.toLowerCase() === String(idOrSlug).toLowerCase())
+    );
+    if (localMatch) return localMatch;
+
     throw new Error(`Product not found in Ecwid catalog`);
   } catch (directError) {
     console.warn('Direct Ecwid product lookup error:', directError.message);
@@ -365,6 +399,13 @@ export async function fetchEcwidProductById(idOrSlug) {
       );
       if (matchCached) return matchCached;
     }
+
+    const localMatch = ALL_PRODUCTS.find(p =>
+      String(p.id) === String(idOrSlug) ||
+      String(p.ecwidId) === String(idOrSlug) ||
+      (p.sku && p.sku.toLowerCase() === String(idOrSlug).toLowerCase())
+    );
+    if (localMatch) return localMatch;
 
     throw new Error(`Product not found (${idOrSlug})`);
   }
@@ -422,6 +463,17 @@ export async function fetchEcwidCategories() {
     if (cached && Array.isArray(cached.items) && cached.items.length > 0) {
       console.info('Serving cached Ecwid categories.');
       return cached;
+    }
+
+    if (Array.isArray(CATEGORIES) && CATEGORIES.length > 0) {
+      return {
+        items: CATEGORIES.map(c => ({
+          id: Number(c.categoryId || 0),
+          name: c.title,
+          description: c.subtitle,
+          imageUrl: c.image
+        }))
+      };
     }
 
     throw err;

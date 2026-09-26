@@ -1,10 +1,11 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').trim();
+import { getSafeApiBase } from '../storefront/ecwidStorefront';
 
 export async function fetchCustomerOrders(email) {
   if (!email) return [];
   
   try {
-    const response = await fetch(`${API_BASE}/api/ecwid/orders?email=${encodeURIComponent(email)}`);
+    const apiBase = getSafeApiBase();
+    const response = await fetch(`${apiBase}/api/ecwid/orders?email=${encodeURIComponent(email)}`);
     
     if (!response.ok) {
       console.warn(`Fetch orders response not ok: ${response.status}`);
