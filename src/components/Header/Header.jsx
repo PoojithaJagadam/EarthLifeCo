@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Search, User, ShoppingCart, Menu, X, ArrowRight, HelpCircle } from 'lucide-react';
+import { Search, User, ShoppingCart, Menu, X, ArrowRight } from 'lucide-react';
 import Container from '../UI/Container/Container';
 import logoImg from '../../assets/logo.png';
 import RandomLetterSwap from '../UI/RandomLetterSwap/RandomLetterSwap';
@@ -8,42 +8,78 @@ import { useCart } from '../../context/CartContext';
 import { useEcwidAccount } from '../../hooks/useEcwidAccount';
 import './Header.css';
 
+const SUPPORT_PATHS = ['/faqs', '/contact', '/cancellation-request'];
+
 const Header = () => {
   const { cartCount } = useCart();
   const { isLoggedIn, customer } = useEcwidAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
+  const supportDropdownRef = useRef(null);
   const location = useLocation();
   const [prevPath, setPrevPath] = useState(location.pathname);
 
-  // Close mobile menu on route change cleanly during render
+  const isSupportActive = SUPPORT_PATHS.includes(location.pathname);
+
+  // Close menus on route change cleanly during render
   if (prevPath !== location.pathname) {
     setPrevPath(location.pathname);
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
+    if (isSupportOpen) {
+      setIsSupportOpen(false);
+    }
+    if (isMobileSupportOpen) {
+      setIsMobileSupportOpen(false);
+    }
   }
 
-  // Handle ESC key and scroll lock
+  // Handle ESC key, outside click for desktop Support dropdown, and scroll lock for mobile drawer
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setIsMenuOpen(false);
+        setIsSupportOpen(false);
+      }
+    };
+
+    const handlePointerDownOutside = (e) => {
+      if (
+        supportDropdownRef.current &&
+        !supportDropdownRef.current.contains(e.target)
+      ) {
+        setIsSupportOpen(false);
       }
     };
 
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
-      window.addEventListener('keydown', handleKeyDown);
     } else {
       document.body.style.overflow = '';
     }
 
+    window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handlePointerDownOutside);
+    document.addEventListener('touchstart', handlePointerDownOutside);
+
     return () => {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handlePointerDownOutside);
+      document.removeEventListener('touchstart', handlePointerDownOutside);
     };
   }, [isMenuOpen]);
+
+  const handleSupportBlur = (e) => {
+    if (
+      supportDropdownRef.current &&
+      !supportDropdownRef.current.contains(e.relatedTarget)
+    ) {
+      setIsSupportOpen(false);
+    }
+  };
 
   return (
     <header className="header">
@@ -67,29 +103,64 @@ const Header = () => {
           <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
             <RandomLetterSwap text="About EarthLife Co." staggerDuration={0.02} duration={0.45} />
           </NavLink>
-          <NavLink to="/faqs" className={({ isActive }) => (isActive ? 'active' : '')}>
-            <RandomLetterSwap text="FAQs" staggerDuration={0.025} duration={0.45} />
-          </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
-            <RandomLetterSwap text="Contact" staggerDuration={0.025} duration={0.45} />
-          </NavLink>
+
+          <div
+            className={`nav-support-dropdown ${isSupportOpen ? 'open' : ''}`}
+            ref={supportDropdownRef}
+            onBlur={handleSupportBlur}
+          >
+            <button
+              type="button"
+              className={`nav-support-trigger ${isSupportActive || isSupportOpen ? 'active' : ''}`}
+              onClick={() => setIsSupportOpen((prev) => !prev)}
+              aria-expanded={isSupportOpen}
+              aria-haspopup="menu"
+              aria-controls="desktop-support-menu"
+            >
+              <RandomLetterSwap text="Support" staggerDuration={0.025} duration={0.45} />
+              <span className={`nav-support-caret ${isSupportOpen ? 'open' : ''}`} aria-hidden="true">
+                ▾
+              </span>
+            </button>
+
+            <div
+              id="desktop-support-menu"
+              className={`nav-support-menu ${isSupportOpen ? 'open' : ''}`}
+              role="menu"
+              aria-label="Support submenu"
+            >
+              <NavLink
+                to="/faqs"
+                role="menuitem"
+                className={({ isActive }) => `nav-support-item ${isActive ? 'active' : ''}`}
+                onClick={() => setIsSupportOpen(false)}
+              >
+                FAQs
+              </NavLink>
+              <NavLink
+                to="/contact"
+                role="menuitem"
+                className={({ isActive }) => `nav-support-item ${isActive ? 'active' : ''}`}
+                onClick={() => setIsSupportOpen(false)}
+              >
+                Contact Us
+              </NavLink>
+              <NavLink
+                to="/cancellation-request"
+                role="menuitem"
+                className={({ isActive }) => `nav-support-item ${isActive ? 'active' : ''}`}
+                onClick={() => setIsSupportOpen(false)}
+              >
+                Cancel Order / Request Cancellation
+              </NavLink>
+            </div>
+          </div>
         </nav>
         
         <div className="header-actions">
           <Link to="/store#!/~/search" className="icon-btn search-btn" aria-label="Search" title="Search">
             <Search size={20} />
           </Link>
-          <div className="support-dropdown" style={{position: 'relative'}}>
-            <button className="icon-btn support-btn" title="Support" onClick={() => setIsSupportOpen(!isSupportOpen)}>
-              <HelpCircle size={20} />
-            </button>
-            {isSupportOpen && (
-              <div className="support-menu" style={{position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #ddd', padding: '10px', borderRadius: '8px', zIndex: 10}} onClick={() => setIsSupportOpen(false)}>
-                <Link to="/cancellation-request" style={{display: 'block', padding: '5px 0', textDecoration: 'none', color: 'black'}}>Cancel Order</Link>
-                <Link to="/contact" style={{display: 'block', padding: '5px 0', textDecoration: 'none', color: 'black'}}>Contact Us</Link>
-              </div>
-            )}
-          </div>
           <Link 
             to="/account" 
             className="icon-btn account-btn" 
@@ -160,25 +231,65 @@ const Header = () => {
               className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`} 
               onClick={() => setIsMenuOpen(false)}
             >
-              <span>About</span>
+              <span>About EarthLife Co.</span>
               <ArrowRight size={16} className="mobile-nav-arrow" />
             </NavLink>
-            <NavLink 
-              to="/faqs" 
-              className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`} 
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <span>FAQs</span>
-              <ArrowRight size={16} className="mobile-nav-arrow" />
-            </NavLink>
-            <NavLink 
-              to="/contact" 
-              className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`} 
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <span>Contact</span>
-              <ArrowRight size={16} className="mobile-nav-arrow" />
-            </NavLink>
+
+            <div className="mobile-support-group">
+              <button
+                type="button"
+                className={`mobile-nav-link mobile-support-trigger ${isSupportActive || isMobileSupportOpen ? 'active' : ''}`}
+                onClick={() => setIsMobileSupportOpen((prev) => !prev)}
+                aria-expanded={isMobileSupportOpen}
+                aria-controls="mobile-support-submenu"
+              >
+                <span>Support</span>
+                <span className={`mobile-support-caret ${isMobileSupportOpen ? 'open' : ''}`} aria-hidden="true">
+                  ▾
+                </span>
+              </button>
+
+              <div
+                id="mobile-support-submenu"
+                className={`mobile-support-submenu ${isMobileSupportOpen ? 'open' : ''}`}
+                role="region"
+                aria-label="Support links"
+              >
+                <NavLink
+                  to="/faqs"
+                  className={({ isActive }) => `mobile-support-sublink ${isActive ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsMobileSupportOpen(false);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <span>FAQs</span>
+                  <ArrowRight size={14} className="mobile-nav-arrow" />
+                </NavLink>
+                <NavLink
+                  to="/contact"
+                  className={({ isActive }) => `mobile-support-sublink ${isActive ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsMobileSupportOpen(false);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <span>Contact Us</span>
+                  <ArrowRight size={14} className="mobile-nav-arrow" />
+                </NavLink>
+                <NavLink
+                  to="/cancellation-request"
+                  className={({ isActive }) => `mobile-support-sublink ${isActive ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsMobileSupportOpen(false);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <span>Cancel Order / Request Cancellation</span>
+                  <ArrowRight size={14} className="mobile-nav-arrow" />
+                </NavLink>
+              </div>
+            </div>
           </nav>
 
           <div className="mobile-nav-footer">

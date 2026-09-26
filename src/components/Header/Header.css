@@ -48,22 +48,111 @@
   align-items: center;
 }
 
-.nav-links a {
+.nav-links > a,
+.nav-links .nav-support-trigger {
   color: var(--color-text);
+  font-family: inherit;
   font-weight: 500;
   font-size: 0.95rem;
   padding: 6px 0;
+  border: none;
   border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
+  gap: 0.3rem;
   transition: color 0.2s ease, border-color 0.2s ease;
   text-decoration: none;
   white-space: nowrap;
 }
 
-.nav-links a.active, .nav-links a:hover {
+.nav-links > a.active,
+.nav-links > a:hover,
+.nav-links .nav-support-trigger.active,
+.nav-links .nav-support-trigger:hover,
+.nav-links .nav-support-trigger:focus-visible {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
+}
+
+.nav-links .nav-support-trigger:hover .letter-swap-char,
+.nav-links .nav-support-trigger:focus-visible .letter-swap-char {
+  transform: translateY(-100%);
+}
+
+.nav-support-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-support-caret {
+  font-size: 0.8em;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.nav-support-caret.open {
+  transform: rotate(180deg);
+}
+
+.nav-support-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background-color: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E5E0D8);
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(18, 38, 28, 0.12);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  z-index: 1010;
+}
+
+.nav-support-menu.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.nav-links .nav-support-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 7px;
+  border-bottom: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text, #1A3324);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-links .nav-support-item:hover,
+.nav-links .nav-support-item:focus-visible {
+  background-color: var(--color-surface-hover, #F4F1EA);
+  color: var(--color-primary);
+  border-bottom: none;
+}
+
+.nav-links .nav-support-item.active {
+  background-color: #E8F2EC;
+  color: var(--color-primary);
+  font-weight: 600;
+  border-bottom: none;
 }
 
 .header-actions {
@@ -235,6 +324,73 @@
   transform: translateX(3px);
 }
 
+.mobile-support-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-support-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mobile-support-caret {
+  font-size: 0.9rem;
+  color: #8C9990;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.mobile-support-trigger.active .mobile-support-caret,
+.mobile-support-trigger:hover .mobile-support-caret {
+  color: var(--color-primary);
+}
+
+.mobile-support-caret.open {
+  transform: rotate(180deg);
+}
+
+.mobile-support-submenu {
+  display: none;
+  flex-direction: column;
+  padding: 0.25rem 0 0.35rem 0.85rem;
+  margin-left: 0.75rem;
+  border-left: 2px solid #E2DCD0;
+  gap: 2px;
+}
+
+.mobile-support-submenu.open {
+  display: flex;
+}
+
+.mobile-support-sublink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border-radius: 7px;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: #2B4736;
+  text-decoration: none;
+  min-height: 44px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mobile-support-sublink:hover {
+  background-color: #F0EDE6;
+  color: var(--color-primary);
+}
+
+.mobile-support-sublink.active {
+  background-color: #E8F2EC;
+  color: #1E3A2B;
+  font-weight: 700;
+}
+
 .mobile-nav-footer {
   padding: 1.25rem;
   background-color: #F3EFE7;
@@ -290,7 +446,8 @@
   .nav-links {
     gap: 14px;
   }
-  .nav-links a {
+  .nav-links > a,
+  .nav-links .nav-support-trigger {
     font-size: 0.88rem;
   }
 }
