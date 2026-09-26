@@ -12,8 +12,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import Container from '../../components/UI/Container/Container';
-import HelpfulCrowdWidget from '../../integrations/helpfulcrowd/HelpfulCrowdWidget';
-import ReviewBlock from '../../components/ReviewBlock/ReviewBlock';
 import { useEcwidProduct, useEcwidProducts } from '../../hooks/useEcwidProducts';
 import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
@@ -242,11 +240,6 @@ const ProductDetails = () => {
 
             {/* Title */}
             <h1 className="pd-title">{product.name}</h1>
-
-            {/* HelpfulCrowd Product Summary */}
-            <div style={{ marginTop: '-0.5rem', marginBottom: '1rem' }}>
-              <HelpfulCrowdWidget key={`summary-${product.id}`} widgetType="product-summary" productId={product.id} />
-            </div>
 
             {/* Price Row & Tax Note */}
             <div className="pd-price-row">
@@ -478,12 +471,6 @@ const ProductDetails = () => {
           </section>
         )}
       </Container>
-
-      {/* HelpfulCrowd Review Block */}
-      <ReviewBlock key={`reviews-${product.id}`} productId={product.id} />
-
-      {/* HelpfulCrowd Sidebar Widget */}
-      <HelpfulCrowdWidget key={`sidebar-${product.id}`} widgetType="sidebar" productId={product.id} />
 
       {/* Image Zoom Modal */}
       {isZoomModalOpen && (

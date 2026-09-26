@@ -126,6 +126,11 @@ const Checkout = () => {
     return () => { isMounted = false; };
   }, [cartItems, currentStep]);
 
+  const formatPrice = (val) => {
+    const num = Number(val) || 0;
+    return `₹${num.toLocaleString('en-IN')}`;
+  };
+
   // Listen for official Ecwid native order completion (fires ONLY after successful native payment)
   useEffect(() => {
     if (typeof window === 'undefined') return;

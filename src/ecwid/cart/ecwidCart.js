@@ -116,7 +116,8 @@ export function getSavedCartItems() {
     if (!raw || raw === 'undefined' || raw === 'null') return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  } catch (e) {
+    console.error('[DEBUG] JSON.parse error in ecwidCart.js:', e, 'Raw value:', raw);
     return [];
   }
 }
@@ -203,7 +204,7 @@ export async function calculateEcwidOrder(items, couponCode = null, shippingAddr
           data = JSON.parse(text);
         }
       } catch (parseErr) {
-        console.warn('Failed to parse Ecwid calculate response:', parseErr);
+        console.error('[DEBUG] JSON.parse error in ecwidCart.js calculateEcwidOrder:', parseErr, 'Text:', text);
       }
 
       if (data) {
