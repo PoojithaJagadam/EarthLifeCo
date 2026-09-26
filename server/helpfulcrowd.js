@@ -48,7 +48,11 @@ export async function handleHelpfulCrowdApi(req, res) {
 
         // 5. Author
         const authorMatch = cardHtml.match(/<div class="hc-author__text">[\s\S]*?<span class="bold">([^<]+)<\/span>/);
-        const author = authorMatch ? authorMatch[1].trim() : 'Customer';
+        let author = authorMatch ? authorMatch[1].trim() : 'Customer';
+        
+        // DEBUG: Log the author name found
+        console.log('--- FOUND AUTHOR:', author);
+
         const initialMatch = cardHtml.match(/<div class="hc-avatar hc-avatar__initials"[^>]*>([^<]+)<\/div>/);
         const authorInitial = initialMatch ? initialMatch[1].trim() : author.charAt(0);
 

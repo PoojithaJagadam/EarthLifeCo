@@ -222,7 +222,7 @@ const About = () => {
                 <div className="meesho-logo-pill">meesho</div>
                 <div className="meesho-rating-info">
                   <div className="rating-score-row">
-                    <span className="score-num">4.6</span>
+                    <span className="score-num">4.5</span>
                     <div className="star-row">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} size={14} fill="#F59E0B" color="#F59E0B" />

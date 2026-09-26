@@ -292,7 +292,7 @@ const Home = () => {
             <span className="meesho-tag" aria-hidden="true">m</span>
             <div className="proof-content">
               <div className="proof-meesho-header">
-                <span className="proof-stat">4.6</span>
+                <span className="proof-stat">4.5</span>
                 <span className="proof-stars" aria-label="5 stars">★★★★★</span>
               </div>
               <span className="proof-label">Seller Rating on Meesho</span>
