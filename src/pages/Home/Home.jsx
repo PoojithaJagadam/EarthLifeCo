@@ -25,6 +25,7 @@ import { useEcwidCategories } from '../../hooks/useEcwidCategories';
 import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import MissionVision from '../../components/MissionVision/MissionVision';
 import HelpfulCrowdWidget from '../../integrations/helpfulcrowd/HelpfulCrowdWidget';
 import './Home.css';
 
@@ -319,6 +320,8 @@ const Home = () => {
           </div>
         </Container>
       </section>
+
+      <MissionVision />
 
       {/* Shop by Category: Driven by live Ecwid catalog */}
       <section className="categories-section">
