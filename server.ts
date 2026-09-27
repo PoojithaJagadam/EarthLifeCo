@@ -94,14 +94,15 @@ async function startServer() {
   };
   
   app.post('/api/cancellation-request', rateLimiter, async (req, res) => {
-    const { orderId, customerEmail, customerName, reason } = req.body;
+    const { orderId, customerEmail, customerName, reason, requestType } = req.body;
   
     if (!orderId || !customerEmail || !customerName || !reason) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
   
     try {
-      console.log('Cancellation Request Received:');
+      console.log('Support Request Received:');
+      console.log(`Type: ${requestType || 'cancellation'}`);
       console.log(`Order ID: ${orderId}`);
       console.log(`Customer: ${customerName} (${customerEmail})`);
       console.log(`Reason: ${reason}`);
@@ -112,7 +113,7 @@ async function startServer() {
   
       res.status(200).json({ 
         success: true, 
-        message: 'Cancellation request submitted successfully. Our support team will review this in Ecwid and contact you.' 
+        message: 'Support request submitted successfully. Our support team will review this and contact you.' 
       });
     } catch (error) {
       console.error('Error processing cancellation request:', error);

@@ -194,6 +194,9 @@ export async function calculateEcwidOrder(items, couponCode = null, shippingAddr
         'Accept': 'application/json'
       },
       body: JSON.stringify(payload)
+    }).catch(err => {
+      console.error('Fetch error in calculateEcwidOrder:', err);
+      return { ok: false };
     });
 
     if (response && response.ok) {

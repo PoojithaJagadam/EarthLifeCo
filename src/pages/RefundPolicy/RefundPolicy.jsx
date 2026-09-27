@@ -17,7 +17,7 @@ const RefundPolicy = () => {
           <div className="legal-breadcrumb">
             <Link to="/">Home</Link>
             <span className="breadcrumb-separator">/</span>
-            <span className="breadcrumb-active">Refund Policy</span>
+            <span className="breadcrumb-active">Return & Refund Policy</span>
           </div>
         </Container>
       </div>
@@ -26,7 +26,7 @@ const RefundPolicy = () => {
       <section className="legal-hero-section">
         <Container>
           <div className="legal-hero-badge">EarthLife Co. Guarantee</div>
-          <h1 className="legal-hero-title">Refund Policy</h1>
+          <h1 className="legal-hero-title">Return & Refund Policy</h1>
           <p className="legal-hero-subtitle">
             Information regarding returns, refunds, timelines, and cancellations for your orders.
           </p>
@@ -95,9 +95,9 @@ const RefundPolicy = () => {
             <p>Email: <a href="mailto:support@earthlifeco.com" className="legal-email-link">support@earthlifeco.com</a></p>
           </div>
           <div style={{ marginTop: '1.5rem' }}>
-            <Link to="/cancellation-request" className="el-button el-button--primary">
-              <RandomLetterSwap text="Proceed for Order Cancellation" />
-            </Link>
+              <Link to="/cancellation-request" className="el-button el-button--primary">
+                Proceed for Order Cancellation/Return Request
+              </Link>
           </div>
         </div>
       </div>

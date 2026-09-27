@@ -151,7 +151,7 @@ const Header = () => {
                 className={({ isActive }) => `nav-support-item ${isActive ? 'active' : ''}`}
                 onClick={() => setIsSupportOpen(false)}
               >
-                Cancel Order / Request Cancellation
+                Cancel Order / Return Request
               </NavLink>
             </div>
           </div>
@@ -285,7 +285,7 @@ const Header = () => {
                     setIsMenuOpen(false);
                   }}
                 >
-                  <span>Cancel Order / Request Cancellation</span>
+                  <span>Cancel Order / Return Request</span>
                   <ArrowRight size={14} className="mobile-nav-arrow" />
                 </NavLink>
               </div>
