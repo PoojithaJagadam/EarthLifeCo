@@ -93,6 +93,16 @@ async function startServer() {
     next();
   };
   
+  app.post('/api/subscribe', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required.' });
+    
+    console.log(`Newsletter subscription: ${email}`);
+    // Here you would integrate with your email marketing provider (e.g., Mailchimp, Klaviyo)
+    
+    res.status(200).json({ success: true, message: 'Subscribed successfully.' });
+  });
+
   app.post('/api/cancellation-request', rateLimiter, async (req, res) => {
     const { orderId, customerEmail, customerName, reason, requestType } = req.body;
   

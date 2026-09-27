@@ -10,14 +10,28 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (email.trim()) {
-      setSubscribed(true);
-      setTimeout(() => {
-        setSubscribed(false);
-        setEmail('');
-      }, 3500);
+      try {
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        
+        if (response.ok) {
+          setSubscribed(true);
+          setTimeout(() => {
+            setSubscribed(false);
+            setEmail('');
+          }, 3500);
+        } else {
+          console.error('Subscription failed');
+        }
+      } catch (error) {
+        console.error('Subscription error:', error);
+      }
     }
   };
 
@@ -106,7 +120,7 @@ const Footer = () => {
       {/* Footer Bottom Bar */}
       <div className="footer-bottom">
         <Container className="bottom-flex">
-          <p className="copyright-text">© 2025 EarthLife Co. All rights reserved.</p>
+          <p className="copyright-text">© 2026 EarthLife Co. All rights reserved.</p>
           <div className="footer-legal">
             <Link to="/privacy-policy">Privacy Policy</Link>
             <span className="legal-divider">|</span>
