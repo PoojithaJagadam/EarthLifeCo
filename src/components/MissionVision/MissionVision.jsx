@@ -26,9 +26,9 @@ const MissionVision = () => {
               </div>
               <div className="why-mv-text-group">
                 <span className="why-section-tag">OUR MISSION</span>
-                <h3 className="why-mv-title">Making Natural Living More Accessible</h3>
+                <h3 className="why-mv-title">Crafting Timeless Essentials</h3>
                 <p className="why-mv-desc">
-                  Our mission is to make thoughtfully designed everyday products more accessible, combining carefully selected natural materials, timeless design, and a premium experience at prices that fit everyday homes.
+                  At Earthlife Co., we believe natural essentials shouldn't feel exclusive. Our mission is to make thoughtfully designed everyday products more accessible—combining carefully selected natural materials, timeless design, and a premium experience at prices that fit everyday homes. Because quality should be something more people can enjoy, every single day.
                 </p>
               </div>
             </div>
@@ -51,9 +51,9 @@ const MissionVision = () => {
               </div>
               <div className="why-mv-text-group">
                 <span className="why-section-tag">OUR VISION</span>
-                <h3 className="why-mv-title">A Natural Choice for Every Home</h3>
+                <h3 className="why-mv-title">A Future of Natural Essentials</h3>
                 <p className="why-mv-desc">
-                  Our vision is for thoughtfully made everyday essentials to become a natural choice for every home, combining quality, timeless design and carefully selected natural materials.
+                  We envision a future where thoughtfully made everyday essentials become a natural choice for every home. By combining quality, timeless design, and carefully selected natural materials, we aim to make premium everyday living more accessible—one product, one home, and one thoughtful choice at a time.
                 </p>
               </div>
             </div>
