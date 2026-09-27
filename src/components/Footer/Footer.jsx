@@ -76,16 +76,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Column 5: Legal & Policies */}
-        <div className="footer-col">
-          <h3 className="footer-col-heading">LEGAL &amp; POLICIES</h3>
-          <ul className="footer-links-list">
-            <li><Link to="/terms-and-conditions">Terms &amp; Conditions</Link></li>
-            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-            <li><Link to="/refund-policy">Refund &amp; Return Policy</Link></li>
-          </ul>
-        </div>
-
         {/* Column 6: Subscribe to our newsletter */}
         <div className="footer-col footer-col-subscribe">
           <h3 className="footer-col-heading">Subscribe to our newsletter</h3>
