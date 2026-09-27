@@ -387,7 +387,12 @@ export async function handleEcwidApi(req, res) {
         if (itemsParam) {
           try {
             console.log('[DEBUG] itemsParam:', itemsParam);
-            bodyData = { items: JSON.parse(decodeURIComponent(itemsParam)) };
+            const decoded = decodeURIComponent(itemsParam);
+            if (decoded && decoded !== 'undefined') {
+              bodyData = { items: JSON.parse(decoded) };
+            } else {
+              bodyData = { items: [] };
+            }
           } catch (e) {
             console.error('[DEBUG] JSON.parse error:', e);
             bodyData = { items: [] };
