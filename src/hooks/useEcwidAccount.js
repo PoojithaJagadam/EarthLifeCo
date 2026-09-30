@@ -9,7 +9,12 @@ import {
 
 export function useEcwidAccount() {
   const [customer, setCustomer] = useState(() => getCurrentEcwidCustomer());
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Customer) {
+      return false;
+    }
+    return true;
+  });
 
   const refresh = useCallback(() => {
     const cust = getCurrentEcwidCustomer();
@@ -18,6 +23,11 @@ export function useEcwidAccount() {
   }, []);
 
   useEffect(() => {
+    // If Ecwid is already loaded, resolve loading immediately
+    if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Customer) {
+      setIsLoading(false);
+    }
+
     // Subscribe to Ecwid customer session changes (sign in, sign out, profile update)
     const unsubscribe = subscribeToEcwidCustomer((cust) => {
       setCustomer(cust);

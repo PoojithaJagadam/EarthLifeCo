@@ -37,6 +37,7 @@ const Account = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isFromCheckout = searchParams.get('redirect') === 'checkout';
+  const isFromCart = searchParams.get('redirect') === 'cart';
 
   // Detect whether page is currently showing an Ecwid Order Confirmation
   const [orderConfirmationInfo, setOrderConfirmationInfo] = useState(() => {
@@ -108,12 +109,12 @@ const Account = () => {
     };
   }, [clearCart]);
 
-  // Automatically return to Ecwid Shopping Cart on checkout once logged in
+  // Automatically return to Ecwid Shopping Cart on checkout or cart access once logged in
   useEffect(() => {
-    if (isLoggedIn && isFromCheckout && !orderConfirmationInfo.isConfirmed) {
-      navigate('/checkout?step=ecwid-cart', { replace: true });
+    if (isLoggedIn && (isFromCheckout || isFromCart) && !orderConfirmationInfo.isConfirmed) {
+      navigate('/checkout#!/~/cart', { replace: true });
     }
-  }, [isLoggedIn, isFromCheckout, navigate, orderConfirmationInfo.isConfirmed]);
+  }, [isLoggedIn, isFromCheckout, isFromCart, navigate, orderConfirmationInfo.isConfirmed]);
 
   // Authenticated view state: 'details' | 'addresses' | 'orders' | 'overview'
   const [activeTab, setActiveTab] = useState(() => {
@@ -309,7 +310,7 @@ const Account = () => {
                 if (typeof window !== 'undefined' && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
                   window.Ecwid.openPage('cart');
                 } else {
-                  window.location.href = '/cart';
+                  window.location.href = '/checkout#!/~/cart';
                 }
                 setReorderingEcwidOrderId(null);
               }, 600);

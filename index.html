@@ -8,18 +8,22 @@
     <meta name="description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
     <meta property="og:title" content="EarthLife Co." />
     <meta property="og:description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
-    <!-- Suppress benign ResizeObserver notifications from iframe/storefront embeds -->
+    <!-- Suppress benign ResizeObserver notifications and Ecwid storefront third-party lifecycle rejections -->
     <script>
       (function() {
-        const isResizeObserverError = (msg) => {
-          return typeof msg === 'string' && (
-            msg.includes('ResizeObserver loop completed with undelivered notifications') ||
-            msg.includes('ResizeObserver loop limit exceeded')
+        const isBenignThirdPartyError = (msg) => {
+          if (!msg) return false;
+          const str = typeof msg === 'string' ? msg : (msg.message || String(msg));
+          return (
+            str.includes('ResizeObserver loop completed with undelivered notifications') ||
+            str.includes('ResizeObserver loop limit exceeded') ||
+            str.includes("Cannot read properties of null (reading 'shippingPerson')") ||
+            (str.includes('shippingPerson') && str.includes('null'))
           );
         };
 
         window.addEventListener('error', function(event) {
-          if (event && (isResizeObserverError(event.message) || isResizeObserverError(event.error?.message))) {
+          if (event && (isBenignThirdPartyError(event.message) || isBenignThirdPartyError(event.error?.message))) {
             event.stopImmediatePropagation();
             event.stopPropagation();
             event.preventDefault();
@@ -28,7 +32,7 @@
         }, true);
 
         window.addEventListener('unhandledrejection', function(event) {
-          if (event && (isResizeObserverError(event.reason?.message) || isResizeObserverError(event.reason))) {
+          if (event && (isBenignThirdPartyError(event.reason?.message) || isBenignThirdPartyError(event.reason))) {
             event.stopImmediatePropagation();
             event.stopPropagation();
             event.preventDefault();

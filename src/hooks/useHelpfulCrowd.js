@@ -43,7 +43,19 @@ export function ensureHelpfulCrowdRuntime() {
         return null;
       }
 
-      const manifest = await manifestRes.json();
+      const manifestText = await manifestRes.text();
+      if (!manifestText || !manifestText.trim() || manifestText.trim() === 'undefined' || manifestText.trim() === 'null') {
+        return null;
+      }
+      let manifest = null;
+      try {
+        manifest = JSON.parse(manifestText);
+      } catch (e) {
+        console.warn('HelpfulCrowd manifest response not valid JSON:', e);
+        return null;
+      }
+
+      if (!manifest) return null;
 
       // 4. Inject theme CSS
       if (manifest.css?.url && !document.querySelector(`link[href="${manifest.css.url}"]`)) {

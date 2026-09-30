@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import http from 'http';
+import path from 'path';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import cors from 'cors';
@@ -9,17 +10,19 @@ import { handleHelpfulCrowdApi } from './server/helpfulcrowd.js';
 async function startServer() {
   const app = express();
   const server = http.createServer(app);
+  const isProduction = process.env.NODE_ENV === 'production';
   
-  // Create Vite server in middleware mode with HMR attached to the HTTP server
-  const vite = await createViteServer({
-    server: { 
-      middlewareMode: true,
-      hmr: {
-        server
-      }
-    },
-    appType: 'spa'
-  });
+  let vite: any = null;
+  if (!isProduction) {
+    // Create Vite server in middleware mode
+    vite = await createViteServer({
+      server: { 
+        middlewareMode: true,
+        hmr: false
+      },
+      appType: 'spa'
+    });
+  }
 
   // Use vite's connect instance as middleware
   app.use(cors());
@@ -131,14 +134,22 @@ async function startServer() {
     }
   });
 
-  // Guard any unhandled /api routes so they NEVER fall through to vite.middlewares (which returns HTML)
+  // Guard any unhandled /api routes so they NEVER fall through to static/vite middlewares
   app.use('/api', (req, res) => {
     console.log(`[API DEBUG] STATUS: 404`);
     console.log(`[API DEBUG] CONTENT-TYPE: application/json`);
     res.status(404).json({ error: 'API route not found', path: req.originalUrl });
   });
 
-  app.use(vite.middlewares);
+  if (isProduction) {
+    const distPath = path.resolve(process.cwd(), 'dist');
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else if (vite) {
+    app.use(vite.middlewares);
+  }
 
   server.listen(3000, '0.0.0.0', () => {
     console.log('EarthLife Co. Backend running on port 3000');

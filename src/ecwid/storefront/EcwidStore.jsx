@@ -10,29 +10,29 @@ const EcwidStore = ({ defaultPage, className = '', placeholderText }) => {
   const displayPlaceholder = placeholderText || defaultPlaceholder;
 
   useEffect(() => {
+    let hasNavigated = false;
+
+    const navigateToDefault = () => {
+      if (hasNavigated) return;
+      if (defaultPage && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
+        hasNavigated = true;
+        try {
+          window.Ecwid.openPage(defaultPage);
+        } catch (e) {
+          console.warn('Ecwid openPage error:', e);
+        }
+      }
+    };
+
     const initStore = () => {
       if (window.xProductBrowser) {
         window.xProductBrowser("id=my-store-" + storeId);
       }
-      
-      const navigateToDefault = () => {
-        if (defaultPage && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
-          try {
-            window.Ecwid.openPage(defaultPage);
-          } catch (e) {
-            console.warn('Ecwid openPage error:', e);
-          }
-        }
-      };
 
       if (window.Ecwid && typeof window.Ecwid.openPage === 'function') {
         navigateToDefault();
-        setTimeout(navigateToDefault, 200);
       } else if (window.Ecwid?.OnAPILoaded?.add) {
         window.Ecwid.OnAPILoaded.add(navigateToDefault);
-      } else {
-        setTimeout(navigateToDefault, 500);
-        setTimeout(navigateToDefault, 1200);
       }
     };
 

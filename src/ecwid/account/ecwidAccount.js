@@ -15,15 +15,7 @@ export function getCurrentEcwidCustomer() {
   }
 
   try {
-    // 1. Try Ecwid.Customer.get()
-    if (window.Ecwid && window.Ecwid.Customer && typeof window.Ecwid.Customer.get === 'function') {
-      const cust = window.Ecwid.Customer.get();
-      if (cust && (cust.email || cust.id)) {
-        return normalizeCustomerData(cust);
-      }
-    }
-
-    // 2. Try Ecwid.getProfile()
+    // 1. Try Ecwid.getProfile()
     if (window.Ecwid && typeof window.Ecwid.getProfile === 'function') {
       const prof = window.Ecwid.getProfile();
       if (prof && (prof.email || prof.id)) {
@@ -31,7 +23,7 @@ export function getCurrentEcwidCustomer() {
       }
     }
 
-    // 3. Try Ecwid.getOwnerProfile()
+    // 2. Try Ecwid.getOwnerProfile()
     if (window.Ecwid && typeof window.Ecwid.getOwnerProfile === 'function') {
       const owner = window.Ecwid.getOwnerProfile();
       if (owner && (owner.email || owner.id)) {
@@ -113,7 +105,7 @@ export function normalizeCustomerData(raw) {
 export function subscribeToEcwidCustomer(callback) {
   if (typeof window === 'undefined') return () => {};
 
-  let lastEmail = null;
+  let lastEmail = undefined;
 
   const checkAndUpdate = () => {
     const current = getCurrentEcwidCustomer();
@@ -124,25 +116,38 @@ export function subscribeToEcwidCustomer(callback) {
     }
   };
 
+  const listenerHandler = () => {
+    checkAndUpdate();
+  };
+
+  let listenersRegistered = false;
+
   const registerListeners = () => {
-    if (!window.Ecwid) return;
+    if (listenersRegistered || !window.Ecwid) return;
+    listenersRegistered = true;
 
-    if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.add === 'function') {
-      window.Ecwid.OnSetProfile.add(() => {
-        checkAndUpdate();
-      });
+    try {
+      if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.add === 'function') {
+        window.Ecwid.OnSetProfile.add(listenerHandler);
+      }
+    } catch (e) {
+      console.warn('Error attaching OnSetProfile:', e);
     }
 
-    if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.add === 'function') {
-      window.Ecwid.OnPageLoaded.add(() => {
-        checkAndUpdate();
-      });
+    try {
+      if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.add === 'function') {
+        window.Ecwid.OnPageLoaded.add(listenerHandler);
+      }
+    } catch (e) {
+      console.warn('Error attaching OnPageLoaded:', e);
     }
 
-    if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.add === 'function') {
-      window.Ecwid.OnAPILoaded.add(() => {
-        checkAndUpdate();
-      });
+    try {
+      if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.add === 'function') {
+        window.Ecwid.OnAPILoaded.add(listenerHandler);
+      }
+    } catch (e) {
+      console.warn('Error attaching OnAPILoaded:', e);
     }
   };
 
@@ -150,9 +155,9 @@ export function subscribeToEcwidCustomer(callback) {
     registerListeners();
   }
 
-  // Active check interval for smooth detection of session establishment
+  // Active check interval for smooth detection of session establishment without repeating listener registrations
   const interval = setInterval(() => {
-    if (window.Ecwid) {
+    if (!listenersRegistered && window.Ecwid) {
       registerListeners();
     }
     checkAndUpdate();
@@ -163,6 +168,29 @@ export function subscribeToEcwidCustomer(callback) {
 
   return () => {
     clearInterval(interval);
+    if (listenersRegistered && window.Ecwid) {
+      try {
+        if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.remove === 'function') {
+          window.Ecwid.OnSetProfile.remove(listenerHandler);
+        }
+      } catch {
+        // Ignore unregister errors if not supported by storefront SDK
+      }
+      try {
+        if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.remove === 'function') {
+          window.Ecwid.OnPageLoaded.remove(listenerHandler);
+        }
+      } catch {
+        // Ignore unregister errors if not supported by storefront SDK
+      }
+      try {
+        if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.remove === 'function') {
+          window.Ecwid.OnAPILoaded.remove(listenerHandler);
+        }
+      } catch {
+        // Ignore unregister errors if not supported by storefront SDK
+      }
+    }
   };
 }
 
@@ -242,7 +270,11 @@ export async function updateCustomerProfile({ customerId, email, name, phone, ac
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ customerId, email, name, phone, acceptsMarketing, shippingAddresses })
     });
-    const data = await res.json();
+    const text = await res.text();
+    if (!text || !text.trim() || text.trim() === 'undefined' || text.trim() === 'null') {
+      return { success: false, message: 'Empty or invalid response from server' };
+    }
+    const data = JSON.parse(text);
     return data;
   } catch (err) {
     return {

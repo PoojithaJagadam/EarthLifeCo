@@ -12,7 +12,7 @@ const SUPPORT_PATHS = ['/faqs', '/contact', '/cancellation-request'];
 
 const Header = () => {
   const { cartCount } = useCart();
-  const { isLoggedIn, customer } = useEcwidAccount();
+  const { isLoggedIn, customer, isLoading } = useEcwidAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
@@ -170,7 +170,13 @@ const Header = () => {
             <User size={20} />
             {isLoggedIn && <span className="account-logged-in-indicator" />}
           </Link>
-          <Link to="/cart" className="icon-btn cart-btn" aria-label="Cart" id="header-cart-btn" title="Shopping Cart">
+          <Link 
+            to={!isLoading && !isLoggedIn ? "/account?redirect=cart" : "/checkout#!/~/cart"} 
+            className="icon-btn cart-btn" 
+            aria-label="Cart" 
+            id="header-cart-btn" 
+            title="Shopping Cart"
+          >
             <ShoppingCart size={20} />
             <span className="cart-badge">{cartCount}</span>
           </Link>
@@ -302,7 +308,11 @@ const Header = () => {
                 <User size={18} />
                 <span>{isLoggedIn ? (customer?.name?.split(' ')[0] || 'Account') : 'Account'}</span>
               </Link>
-              <Link to="/cart" className="mobile-shortcut-btn" onClick={() => setIsMenuOpen(false)}>
+              <Link 
+                to={!isLoading && !isLoggedIn ? "/account?redirect=cart" : "/checkout#!/~/cart"} 
+                className="mobile-shortcut-btn" 
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <ShoppingCart size={18} />
                 <span>Cart ({cartCount})</span>
               </Link>

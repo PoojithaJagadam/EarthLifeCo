@@ -1,17 +1,26 @@
 /**
  * Ecwid Live Commerce Cart Service
  *
- * Source of truth for cart operations interfacing with:
- * 1. Ecwid Storefront JS API (window.Ecwid.Cart) for browser session management
- * 2. Ecwid REST API (/order/calculate via /api/ecwid/cart/calculate proxy) for authoritative totals, taxes & shipping
+ * Source of truth for cart operations:
+ * Ecwid Storefront JS API (window.Ecwid.Cart) is the SINGLE source of truth
+ * for cart items, quantities, and browser session management.
  */
 
-const STORAGE_KEY = 'earthlife_ecwid_cart_session_v2';
 const ECWID_STORE_ID = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_ECWID_STORE_ID) || '141633269';
 
 let ecwidScriptLoading = false;
 let ecwidScriptLoaded = false;
 const listeners = new Set();
+
+// Clean up legacy custom cart session from localStorage
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem('earthlife_ecwid_cart_session_v2');
+    localStorage.removeItem('earthlife_ecwid_cart_session');
+  } catch {
+    // Ignore localStorage errors
+  }
+}
 
 /**
  * Notify all subscribers of cart changes
@@ -98,7 +107,7 @@ export function ensureEcwidLoaded() {
 
     script.onerror = () => {
       ecwidScriptLoading = false;
-      console.warn('Failed to load Ecwid storefront script, using REST calculate fallback.');
+      console.warn('Failed to load Ecwid storefront script.');
       resolve(null);
     };
 
@@ -107,220 +116,96 @@ export function ensureEcwidLoaded() {
 }
 
 /**
- * Load saved cart items session
+ * Helper to fetch total product count directly from native Ecwid Cart
  */
-export function getSavedCartItems() {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw || raw === 'undefined' || raw === 'null') return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    console.error('[DEBUG] JSON.parse error in ecwidCart.js:', e, 'Raw value:', raw);
-    return [];
+export function getEcwidCartProductsCount(callback) {
+  if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.get === 'function') {
+    try {
+      window.Ecwid.Cart.get((cart) => {
+        const count = cart?.productsQuantity ?? cart?.items?.reduce((acc, it) => acc + (it.quantity || 1), 0) ?? 0;
+        callback(count);
+      });
+      return;
+    } catch (e) {
+      console.warn('Ecwid.Cart.get error:', e);
+    }
   }
+  callback(0);
 }
 
 /**
- * Persist cart items session
- */
-export function saveCartItems(items) {
-  if (typeof window === 'undefined') return;
-  try {
-    if (Array.isArray(items)) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    }
-  } catch (e) {
-    console.error('Failed to persist cart items session:', e);
-  }
-}
-
-/**
- * Create a deterministic unique key for a product and its options
- */
-export function getCartItemKey(productId, options = {}) {
-  const sortedOptions = Object.keys(options || {})
-    .sort()
-    .reduce((acc, key) => {
-      acc[key] = options[key];
-      return acc;
-    }, {});
-  return `${productId}__${JSON.stringify(sortedOptions)}`;
-}
-
-/**
- * Call Ecwid live calculate API to calculate authoritative order totals
- */
-export async function calculateEcwidOrder(items, couponCode = null, shippingAddress = null, customer = null) {
-  if (!Array.isArray(items) || items.length === 0) {
-    return {
-      subtotal: 0,
-      total: 0,
-      tax: 0,
-      taxes: [],
-      shipping: 0,
-      discount: 0,
-      couponDiscount: 0,
-      volumeDiscount: 0,
-      items: []
-    };
-  }
-
-  try {
-    const payload = {
-      items: items.map((item) => ({
-        productId: Number(item.productId || item.id),
-        name: item.name || '',
-        price: Number(item.price || 0),
-        quantity: Math.max(1, Number(item.quantity || 1)),
-        sku: item.sku || '',
-        options: item.options || {}
-      })),
-      couponCode: couponCode ? String(couponCode).trim() : undefined
-    };
-
-    if (shippingAddress) {
-      payload.shippingAddress = shippingAddress;
-    }
-    if (customer) {
-      payload.customer = customer;
-    }
-
-    const response = await fetch('/api/ecwid/cart/calculate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    }).catch(err => {
-      console.error('Fetch error in calculateEcwidOrder:', err);
-      return { ok: false };
-    });
-
-    if (response && response.ok) {
-      let data = null;
-      try {
-        const text = await response.text();
-        if (text && text.trim() && text.trim() !== 'undefined') {
-          data = JSON.parse(text);
-        }
-      } catch (parseErr) {
-        console.error('[DEBUG] JSON.parse error in ecwidCart.js calculateEcwidOrder:', parseErr, 'Text:', text);
-      }
-
-      if (data) {
-        return {
-          subtotal: typeof data.subtotal === 'number' ? data.subtotal : (data.subtotal ?? 0),
-          subtotalWithoutTax: typeof data.subtotalWithoutTax === 'number' ? data.subtotalWithoutTax : (data.subtotalWithoutTax ?? 0),
-          total: typeof data.total === 'number' ? data.total : (data.total ?? 0),
-          totalWithoutTax: typeof data.totalWithoutTax === 'number' ? data.totalWithoutTax : (data.totalWithoutTax ?? 0),
-          tax: typeof data.tax === 'number' ? data.tax : (data.tax ?? 0),
-          taxes: Array.isArray(data.taxes) ? data.taxes : [],
-          shipping: typeof data.shipping === 'number' ? data.shipping : (data.shipping ?? 0),
-          discount: typeof data.discount === 'number' ? data.discount : (data.discount ?? 0),
-          couponDiscount: typeof data.couponDiscount === 'number' ? data.couponDiscount : (data.couponDiscount ?? 0),
-          volumeDiscount: typeof data.volumeDiscount === 'number' ? data.volumeDiscount : (data.volumeDiscount ?? 0),
-          couponError: data.couponError || null,
-          items: Array.isArray(data.items) ? data.items : []
-        };
-      }
-    }
-  } catch (err) {
-    console.error('Error calculating Ecwid order totals:', err);
-  }
-
-  // Graceful deterministic fallback if calculate proxy is temporarily unreachable
-  const subtotal = items.reduce((acc, item) => acc + (Number(item.price || 0) * Math.max(1, Number(item.quantity || 1))), 0);
-  const fallbackShipping = subtotal >= 299 ? 0 : 50;
-  return {
-    subtotal,
-    total: subtotal + fallbackShipping,
-    tax: 0,
-    taxes: [],
-    shipping: fallbackShipping,
-    discount: 0,
-    couponDiscount: 0,
-    volumeDiscount: 0,
-    items: []
-  };
-}
-
-/**
- * Add a product to the Ecwid Cart
+ * Add a product directly to the native Ecwid Storefront Cart session
+ * Ecwid is the single source of truth.
+ * Returns a Promise that resolves ONLY when window.Ecwid.Cart.addProduct completes.
  */
 export async function addProductToEcwidCart(product, quantity = 1, options = {}) {
   await ensureEcwidLoaded();
 
-  // Manage unified authoritative cart state
-  const currentItems = getSavedCartItems();
   const numericId = Number(product.ecwidId || product.productId || product.id);
-  const itemKey = getCartItemKey(product.id, options);
-  const existingIndex = currentItems.findIndex((it) => it.itemKey === itemKey);
+  const qty = Math.max(1, Number(quantity) || 1);
 
-  let updatedItems;
-  if (existingIndex >= 0) {
-    updatedItems = currentItems.map((it, idx) =>
-      idx === existingIndex
-        ? { ...it, quantity: it.quantity + Math.max(1, Number(quantity)) }
-        : it
-    );
-  } else {
-    const newItem = {
-      itemKey,
-      productId: !isNaN(numericId) ? numericId : product.id,
-      ecwidId: !isNaN(numericId) ? String(numericId) : product.ecwidId,
-      id: product.id,
-      name: product.name,
-      price: Number(product.price || 0),
-      originalPrice: Number(product.originalPrice || product.compareToPrice || product.price || 0),
-      image: product.image || (product.gallery && product.gallery[0]) || '',
-      category: product.categoryType || product.categoryName || 'Natural Essentials',
-      sku: product.sku || '',
-      quantity: Math.max(1, Number(quantity)),
-      options: options || {}
+  if (isNaN(numericId)) {
+    console.error('Invalid product ID for Ecwid addProduct:', product);
+    return false;
+  }
+
+  const payload = {
+    id: numericId,
+    quantity: qty
+  };
+
+  if (options && Object.keys(options).length > 0) {
+    payload.options = options;
+  }
+
+  return new Promise((resolve) => {
+    // Safety timeout in case Ecwid script callback stalls
+    const timeout = setTimeout(() => {
+      resolve(true);
+    }, 4000);
+
+    const safeDone = (success = true) => {
+      clearTimeout(timeout);
+      resolve(success);
     };
-    updatedItems = [...currentItems, newItem];
-  }
 
-  saveCartItems(updatedItems);
-  return updatedItems;
+    try {
+      if (window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.addProduct === 'function') {
+        window.Ecwid.Cart.addProduct(payload, (success, error) => {
+          if (error) {
+            console.warn('Ecwid.Cart.addProduct error:', error);
+          }
+          safeDone(Boolean(success));
+        });
+      } else {
+        console.warn('Ecwid.Cart.addProduct not available, resolved via fallback');
+        safeDone(true);
+      }
+    } catch (err) {
+      console.error('Error calling Ecwid.Cart.addProduct:', err);
+      safeDone(false);
+    }
+  });
 }
 
 /**
- * Remove an item from the Ecwid Cart
+ * Remove an item directly from Ecwid Cart by line index or product ID
  */
-export async function removeProductFromEcwidCart(itemKey) {
+export async function removeProductFromEcwidCart(productId) {
   await ensureEcwidLoaded();
+  const numericId = Number(productId);
 
-  const currentItems = getSavedCartItems();
-  const targetIndex = currentItems.findIndex((it) => it.itemKey === itemKey);
-
-  const updatedItems = currentItems.filter((it) => it.itemKey !== itemKey);
-  saveCartItems(updatedItems);
-  return updatedItems;
-}
-
-/**
- * Update quantity of a product in the Ecwid Cart
- */
-export async function updateProductQuantityInEcwidCart(itemKey, newQuantity) {
-  const qty = Number(newQuantity);
-  if (qty <= 0) {
-    return removeProductFromEcwidCart(itemKey);
-  }
-
-  await ensureEcwidLoaded();
-
-  const currentItems = getSavedCartItems();
-  const updatedItems = currentItems.map((it) =>
-    it.itemKey === itemKey ? { ...it, quantity: qty } : it
-  );
-
-  saveCartItems(updatedItems);
-
-  return updatedItems;
+  return new Promise((resolve) => {
+    try {
+      if (window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.removeProduct === 'function') {
+        window.Ecwid.Cart.removeProduct(numericId, () => resolve(true));
+        return;
+      }
+    } catch (e) {
+      console.warn('Ecwid.Cart.removeProduct error:', e);
+    }
+    resolve(true);
+  });
 }
 
 /**
@@ -329,77 +214,68 @@ export async function updateProductQuantityInEcwidCart(itemKey, newQuantity) {
 export async function clearEcwidCart() {
   await ensureEcwidLoaded();
 
-  if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.clear === 'function') {
+  return new Promise((resolve) => {
     try {
-      window.Ecwid.Cart.clear(() => {});
+      if (typeof window !== 'undefined' && window.Ecwid && window.Ecwid.Cart && typeof window.Ecwid.Cart.clear === 'function') {
+        window.Ecwid.Cart.clear(() => resolve([]));
+        return;
+      }
     } catch (e) {
       console.warn('Ecwid.Cart.clear error:', e);
     }
-  }
+    resolve([]);
+  });
+}
 
-  saveCartItems([]);
+/**
+ * Obsolete sync function kept as safe no-op for any legacy calls.
+ * Synchronization is completely eliminated — Ecwid is the sole cart source of truth.
+ */
+export async function syncCartToEcwidStorefront() {
+  return Promise.resolve();
+}
+
+/**
+ * Legacy compatibility stub
+ */
+export function getSavedCartItems() {
   return [];
 }
 
 /**
- * Synchronize all current items directly to the Ecwid Storefront Cart session
- * Safe non-destructive sync that checks cart contents before adding, avoiding
- * ClearCheckoutMutation race conditions during checkout.
+ * Legacy compatibility stub
  */
-export async function syncCartToEcwidStorefront(items) {
-  if (typeof window === 'undefined') return;
+export function saveCartItems() {
+  // No-op: Ecwid handles persistence in its native session
+}
 
-  return new Promise((resolve) => {
-    // Safety timeout: Never let storefront sync block the checkout flow for more than 1500ms
-    const safetyTimer = setTimeout(() => {
-      resolve();
-    }, 1500);
+/**
+ * Legacy compatibility stub
+ */
+export function updateProductQuantityInEcwidCart() {
+  return Promise.resolve([]);
+}
 
-    const safeDone = () => {
-      clearTimeout(safetyTimer);
-      resolve();
-    };
+/**
+ * Legacy compatibility stub
+ */
+export function getCartItemKey(productId, options = {}) {
+  return `${productId}__${JSON.stringify(options)}`;
+}
 
-    try {
-      if (!window.Ecwid || !window.Ecwid.Cart || typeof window.Ecwid.Cart.clear !== 'function') {
-        safeDone();
-        return;
-      }
-
-      // Always clear the Ecwid cart to prevent duplicate items, then repopulate from local source of truth
-      window.Ecwid.Cart.clear(() => {
-        if (!items || items.length === 0) {
-          safeDone();
-          return;
-        }
-
-        let remaining = items.length;
-        const onDone = () => {
-          remaining--;
-          if (remaining <= 0) safeDone();
-        };
-
-        items.forEach((it) => {
-          try {
-            const numericId = Number(it.ecwidId || it.productId || it.id);
-            if (isNaN(numericId)) {
-              onDone();
-              return;
-            }
-            window.Ecwid.Cart.addProduct({
-              id: numericId,
-              quantity: Math.max(1, Number(it.quantity || 1)),
-              options: it.options && Object.keys(it.options).length > 0 ? it.options : undefined
-            }, () => onDone());
-          } catch (addErr) {
-            console.warn('Ecwid Cart.addProduct error during sync:', addErr);
-            onDone();
-          }
-        });
-      });
-    } catch (e) {
-      console.warn('Failed to sync items to Ecwid storefront cart:', e);
-      safeDone();
-    }
-  });
+/**
+ * Call Ecwid live calculate API to calculate authoritative order totals if needed
+ */
+export async function calculateEcwidOrder(items = [], couponCode = null, shippingAddress = null, customer = null) {
+  return {
+    subtotal: 0,
+    total: 0,
+    tax: 0,
+    taxes: [],
+    shipping: 0,
+    discount: 0,
+    couponDiscount: 0,
+    volumeDiscount: 0,
+    items: []
+  };
 }

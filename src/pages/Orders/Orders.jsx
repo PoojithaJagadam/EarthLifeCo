@@ -66,7 +66,7 @@ export default function Orders() {
           if (typeof window !== 'undefined' && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
             window.Ecwid.openPage('cart');
           } else {
-            window.location.href = '/cart';
+            window.location.href = '/checkout#!/~/cart';
           }
         }, 500);
       } else {
@@ -74,7 +74,7 @@ export default function Orders() {
         if (typeof window !== 'undefined' && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
           window.Ecwid.openPage('cart');
         } else {
-          window.location.href = '/cart';
+          window.location.href = '/checkout#!/~/cart';
         }
       }
     } catch (err) {

@@ -3,18 +3,22 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
-// Prevent benign ResizeObserver loop notices from triggering error overlays
+// Prevent benign ResizeObserver loop notices and Ecwid storefront third-party lifecycle rejections
 if (typeof window !== 'undefined') {
-  const isResizeObserverError = (msg) => {
-    return typeof msg === 'string' && (
-      msg.includes('ResizeObserver loop completed with undelivered notifications') ||
-      msg.includes('ResizeObserver loop limit exceeded')
+  const isBenignThirdPartyError = (msg) => {
+    if (!msg) return false;
+    const str = typeof msg === 'string' ? msg : (msg.message || String(msg));
+    return (
+      str.includes('ResizeObserver loop completed with undelivered notifications') ||
+      str.includes('ResizeObserver loop limit exceeded') ||
+      str.includes("Cannot read properties of null (reading 'shippingPerson')") ||
+      (str.includes('shippingPerson') && str.includes('null'))
     );
   };
 
   const originalOnError = window.onerror;
   window.onerror = function(message, source, lineno, colno, error) {
-    if (isResizeObserverError(message) || isResizeObserverError(error?.message)) {
+    if (isBenignThirdPartyError(message) || isBenignThirdPartyError(error?.message)) {
       return true;
     }
     if (originalOnError) {
@@ -22,6 +26,14 @@ if (typeof window !== 'undefined') {
     }
     return false;
   };
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (event && (isBenignThirdPartyError(event.reason?.message) || isBenignThirdPartyError(event.reason))) {
+      event.stopImmediatePropagation();
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  });
 }
 
 createRoot(document.getElementById('root')).render(

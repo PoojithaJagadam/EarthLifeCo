@@ -171,14 +171,19 @@ function resolveCategoryId(cat) {
 }
 
 /**
- * Safely parses response body, handling "undefined" and empty responses.
+ * Safely parses response body, handling "undefined", "null", and empty responses.
  */
 async function safeJsonParse(res) {
-  const text = await res.text();
-  if (!text || text.trim() === '' || text.trim() === 'undefined') {
+  try {
+    const text = await res.text();
+    if (!text || typeof text !== 'string' || !text.trim() || text.trim() === 'undefined' || text.trim() === 'null') {
+      return null;
+    }
+    return JSON.parse(text);
+  } catch (err) {
+    console.warn('[safeJsonParse] Handled JSON parse exception:', err?.message);
     return null;
   }
-  return JSON.parse(text);
 }
 
 /**
@@ -243,7 +248,15 @@ export async function handleEcwidApi(req, res) {
         return true;
       }
 
-      const data = await response.json();
+      const rawText = await response.text();
+      let data = { items: [], total: 0, count: 0, offset: 0, limit: 100 };
+      if (rawText && rawText.trim() && rawText.trim() !== 'undefined' && rawText.trim() !== 'null') {
+        try {
+          data = JSON.parse(rawText);
+        } catch (e) {
+          console.warn('Failed to parse Ecwid products response:', e);
+        }
+      }
       const normalizedItems = (data.items || []).map(p => normalizeProduct(p));
 
       res.statusCode = 200;
@@ -1047,7 +1060,15 @@ export async function handleEcwidApi(req, res) {
         return true;
       }
 
-      const data = await ordersRes.json();
+      const rawText = await ordersRes.text();
+      let data = { total: 0, items: [] };
+      if (rawText && rawText.trim() && rawText.trim() !== 'undefined' && rawText.trim() !== 'null') {
+        try {
+          data = JSON.parse(rawText);
+        } catch (e) {
+          console.warn('Failed to parse Ecwid orders response:', e);
+        }
+      }
       res.statusCode = 200;
       console.log(`[API DEBUG] STATUS: 200`);
       console.log(`[API DEBUG] CONTENT-TYPE: application/json`);

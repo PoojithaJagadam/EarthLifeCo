@@ -20,9 +20,16 @@ const HelpfulCrowdWidget = ({ widgetType = 'review-slider', productId }) => {
       try {
         const res = await fetch('/api/helpfulcrowd/reviews');
         if (res.ok) {
-          const data = await res.json();
-          if (isSubscribed && Array.isArray(data.items) && data.items.length > 0) {
-            setLiveReviews(data.items);
+          const text = await res.text();
+          if (text && text.trim() && text.trim() !== 'undefined' && text.trim() !== 'null') {
+            try {
+              const data = JSON.parse(text);
+              if (isSubscribed && Array.isArray(data.items) && data.items.length > 0) {
+                setLiveReviews(data.items);
+              }
+            } catch (e) {
+              console.warn('HelpfulCrowd reviews response not valid JSON:', e);
+            }
           }
         }
       } catch (err) {

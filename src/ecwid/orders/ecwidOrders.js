@@ -13,12 +13,17 @@ export async function fetchCustomerOrders(email) {
     }
     
     const text = await response.text();
-    if (!text || text.trim() === '' || text.trim() === 'undefined' || text.trim() === 'null') {
+    if (!text || typeof text !== 'string' || !text.trim() || text.trim() === 'undefined' || text.trim() === 'null') {
       return [];
     }
     
-    const data = JSON.parse(text);
-    return Array.isArray(data.items) ? data.items : [];
+    let data = { items: [] };
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return [];
+    }
+    return Array.isArray(data?.items) ? data.items : [];
   } catch (err) {
     console.warn('Failed to fetch orders from Ecwid:', err);
     return [];

@@ -16,12 +16,14 @@ import { useEcwidProduct, useEcwidProducts } from '../../hooks/useEcwidProducts'
 import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
 import { useCart } from '../../context/CartContext';
+import { useEcwidAccount } from '../../hooks/useEcwidAccount';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isLoggedIn, isLoading } = useEcwidAccount();
 
   // Load live product data from Ecwid
   const { product, loading, error, refetch } = useEcwidProduct(id);
@@ -32,6 +34,8 @@ const ProductDetails = () => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
   const [addedAnimation, setAddedAnimation] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
 
   const location = useLocation();
 
@@ -99,18 +103,40 @@ const ProductDetails = () => {
     setSelectedImageIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1));
   };
 
-  // Cart & Buy Now Handlers
-  const handleAddToCart = () => {
-    if (!product || isOutOfStock) return;
-    addToCart(product, quantity, selectedOptions);
-    setAddedAnimation(true);
-    setTimeout(() => setAddedAnimation(false), 1500);
+  // Cart & Buy Now Handlers (Wait for Ecwid addProduct completion)
+  const handleAddToCart = async () => {
+    if (!product || isOutOfStock || isAdding || isBuying) return;
+    setIsAdding(true);
+    try {
+      const success = await addToCart(product, quantity, selectedOptions);
+      if (success) {
+        setAddedAnimation(true);
+        setTimeout(() => setAddedAnimation(false), 1500);
+      }
+    } finally {
+      setIsAdding(false);
+    }
   };
 
-  const handleBuyNow = () => {
-    if (!product || isOutOfStock) return;
-    addToCart(product, quantity, selectedOptions);
-    navigate('/checkout');
+  const handleBuyNow = async () => {
+    if (!product || isOutOfStock || isAdding || isBuying) return;
+    setIsBuying(true);
+    try {
+      const success = await addToCart(product, quantity, selectedOptions);
+      if (success) {
+        // Only navigate after product addition has completed
+        if (!isLoading && isLoggedIn) {
+          navigate('/checkout#!/~/cart');
+        } else if (!isLoading && !isLoggedIn) {
+          navigate('/account?redirect=cart');
+        } else {
+          // Still loading, default to cart and let checkout handle authentication
+          navigate('/checkout#!/~/cart');
+        }
+      }
+    } finally {
+      setIsBuying(false);
+    }
   };
 
   if (loading) {
@@ -383,11 +409,13 @@ const ProductDetails = () => {
                   type="button"
                   className={`pd-add-cart-btn ${addedAnimation ? 'added' : ''}`}
                   onClick={handleAddToCart}
-                  disabled={isOutOfStock}
+                  disabled={isOutOfStock || isAdding || isBuying}
                   id="pd-add-cart-button"
                 >
                   {isOutOfStock ? (
                     <span>Out of Stock</span>
+                  ) : isAdding ? (
+                    <span>Adding to Cart...</span>
                   ) : addedAnimation ? (
                     <>
                       <Check size={18} />
@@ -407,10 +435,10 @@ const ProductDetails = () => {
                 type="button"
                 className="pd-buy-now-btn"
                 onClick={handleBuyNow}
-                disabled={isOutOfStock}
+                disabled={isOutOfStock || isAdding || isBuying}
                 id="pd-buy-now-button"
               >
-                {isOutOfStock ? 'Currently Unavailable' : 'Buy Now'}
+                {isOutOfStock ? 'Currently Unavailable' : isBuying ? 'Opening Cart...' : 'Buy Now'}
               </button>
             </div>
           </div>
