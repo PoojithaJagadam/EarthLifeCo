@@ -8,15 +8,12 @@ const TrustBar = () => {
   return (
     <div className="trust-bar">
       <Container className="trust-bar-inner">
-        <div className="trust-left hide-on-mobile">
+        <div className="trust-content">
           <span className="trust-item">🚚 Free Delivery on orders above ₹299</span>
           <span className="trust-pipe">|</span>
           <span className="trust-item">🛡️ 100% Secure Payments</span>
           <span className="trust-pipe">|</span>
           <span className="trust-item">🇮🇳 Made in India</span>
-        </div>
-        <div className="trust-right">
-          <span className="trust-tagline">A Cleaner You. A Greener Tomorrow.</span>
           <div className="trust-socials">
             <a href="https://www.instagram.com/earth_lifeco" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="trust-social-link" title="Instagram">
               <img src={instagramIcon} alt="Instagram" style={{width: '14px', height: '14px'}} />
