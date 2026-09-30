@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Container from '../../components/UI/Container/Container';
 import '../Legal/LegalPage.css';
-import { RandomLetterSwap } from '../../components/UI/RandomLetterSwap/RandomLetterSwap';
 
 const RefundPolicy = () => {
   useEffect(() => {

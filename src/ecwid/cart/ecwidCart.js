@@ -212,6 +212,16 @@ export async function removeProductFromEcwidCart(productId) {
  * Clear all products from the Ecwid Cart
  */
 export async function clearEcwidCart() {
+  // If order was just placed or we are on orderConfirmation, Ecwid already cleared the cart.
+  // Calling window.Ecwid.Cart.clear() would trigger ClearCheckoutMutation 401 Unauthorized.
+  if (typeof window !== 'undefined') {
+    const hash = window.location.hash || '';
+    const href = window.location.href || '';
+    if (hash.includes('orderConfirmation') || href.includes('orderConfirmation')) {
+      return [];
+    }
+  }
+
   await ensureEcwidLoaded();
 
   return new Promise((resolve) => {
@@ -266,7 +276,7 @@ export function getCartItemKey(productId, options = {}) {
 /**
  * Call Ecwid live calculate API to calculate authoritative order totals if needed
  */
-export async function calculateEcwidOrder(items = [], couponCode = null, shippingAddress = null, customer = null) {
+export async function calculateEcwidOrder(_items = [], _couponCode = null, _shippingAddress = null, _customer = null) {
   return {
     subtotal: 0,
     total: 0,

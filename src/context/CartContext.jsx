@@ -81,14 +81,19 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Clear entire Ecwid cart
-  const clearCart = useCallback(async () => {
+  // Clear entire Ecwid cart (or reset local count post-order without redundant Ecwid clearing)
+  const clearCart = useCallback(async (notifyEcwid = true) => {
     try {
-      await clearEcwidCart();
+      if (notifyEcwid) {
+        await clearEcwidCart();
+      }
       setCartCount(0);
-      showToast('Your cart has been cleared.');
+      if (notifyEcwid) {
+        showToast('Your cart has been cleared.');
+      }
     } catch (err) {
       console.error('Error clearing cart:', err);
+      setCartCount(0);
     }
   }, [showToast]);
 

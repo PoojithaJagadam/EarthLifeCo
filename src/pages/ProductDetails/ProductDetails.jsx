@@ -16,14 +16,12 @@ import { useEcwidProduct, useEcwidProducts } from '../../hooks/useEcwidProducts'
 import LoadingState from '../../components/LoadingState/LoadingState';
 import ErrorState from '../../components/ErrorState/ErrorState';
 import { useCart } from '../../context/CartContext';
-import { useEcwidAccount } from '../../hooks/useEcwidAccount';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const { isLoggedIn, isLoading } = useEcwidAccount();
 
   // Load live product data from Ecwid
   const { product, loading, error, refetch } = useEcwidProduct(id);
@@ -124,15 +122,8 @@ const ProductDetails = () => {
     try {
       const success = await addToCart(product, quantity, selectedOptions);
       if (success) {
-        // Only navigate after product addition has completed
-        if (!isLoading && isLoggedIn) {
-          navigate('/checkout#!/~/cart');
-        } else if (!isLoading && !isLoggedIn) {
-          navigate('/account?redirect=cart');
-        } else {
-          // Still loading, default to cart and let checkout handle authentication
-          navigate('/checkout#!/~/cart');
-        }
+        // Navigate directly to cart in checkout
+        navigate('/checkout#!/~/cart');
       }
     } finally {
       setIsBuying(false);

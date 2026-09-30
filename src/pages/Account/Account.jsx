@@ -33,7 +33,7 @@ const Account = () => {
     updateProfile 
   } = useEcwidAccount();
 
-  const { cartCount, clearCart } = useCart();
+  const { cartCount } = useCart();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const isFromCheckout = searchParams.get('redirect') === 'checkout';
@@ -55,22 +55,12 @@ const Account = () => {
     return { isConfirmed: false, orderNumber: '' };
   });
 
-  // Listen for order completion in Ecwid or hash changes to orderConfirmation
+  // If order confirmation is detected, delegate to /checkout where the official EarthLife Order Confirmation UI lives
   useEffect(() => {
-    const handleOrderPlaced = (order) => {
-      clearCart();
-      const orderNum = order?.orderNumber || order?.id || '';
-      setOrderConfirmationInfo({
-        isConfirmed: true,
-        orderNumber: String(orderNum)
-      });
-    };
-
     const checkHash = () => {
       const hash = window.location.hash || '';
       const href = window.location.href || '';
       if (hash.includes('orderConfirmation') || href.includes('orderConfirmation')) {
-        clearCart();
         const match = href.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i) || hash.match(/orderNumber(?:%253D|%3D|=)([^&%]+)/i);
         setOrderConfirmationInfo({
           isConfirmed: true,
@@ -80,34 +70,15 @@ const Account = () => {
     };
 
     window.addEventListener('hashchange', checkHash);
-    checkHash();
+    return () => window.removeEventListener('hashchange', checkHash);
+  }, []);
 
-    let unsubscribe = null;
-    if (window.Ecwid && window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
-      try {
-        window.Ecwid.OnOrderPlaced.add(handleOrderPlaced);
-      } catch (err) {
-        console.warn('Could not attach OnOrderPlaced in Account:', err);
-      }
-    } else {
-      const interval = setInterval(() => {
-        if (window.Ecwid && window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
-          clearInterval(interval);
-          try {
-            window.Ecwid.OnOrderPlaced.add(handleOrderPlaced);
-          } catch (err) {
-            console.warn('Could not attach OnOrderPlaced in Account:', err);
-          }
-        }
-      }, 500);
-      unsubscribe = () => clearInterval(interval);
+  // When order confirmation is active on /account, redirect seamlessly to /checkout
+  useEffect(() => {
+    if (orderConfirmationInfo.isConfirmed) {
+      navigate(`/checkout${window.location.hash || ''}`, { replace: true });
     }
-
-    return () => {
-      window.removeEventListener('hashchange', checkHash);
-      if (unsubscribe) unsubscribe();
-    };
-  }, [clearCart]);
+  }, [orderConfirmationInfo.isConfirmed, navigate]);
 
   // Automatically return to Ecwid Shopping Cart on checkout or cart access once logged in
   useEffect(() => {
@@ -469,11 +440,10 @@ const Account = () => {
                     <ArrowRight size={16} />
                   </Link>
 
-                  <button
-                    type="button"
+                  <Link
+                    to="/account#!/~/account/orders"
                     onClick={() => {
                       setOrderConfirmationInfo({ isConfirmed: false, orderNumber: '' });
-                      window.location.hash = '!/~/account/orders';
                       setActiveTab('orders');
                     }}
                     style={{
@@ -485,20 +455,15 @@ const Account = () => {
                       backgroundColor: '#FFFFFF',
                       border: '1px solid #C4D9CC',
                       color: '#1E3A2B',
-                      cursor: 'pointer',
+                      textDecoration: 'none',
                       fontWeight: 600,
                       fontSize: '0.92rem'
                     }}
                   >
                     <Package size={16} />
                     <span>View My Orders</span>
-                  </button>
+                  </Link>
                 </div>
-              </div>
-
-              {/* Native Ecwid Order Confirmation embed */}
-              <div className="earthlife-native-auth-wrapper">
-                <EcwidStore />
               </div>
             </div>
           </div>

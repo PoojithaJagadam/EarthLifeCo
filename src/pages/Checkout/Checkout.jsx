@@ -12,6 +12,52 @@ import { useEcwidAccount } from '../../hooks/useEcwidAccount';
 import EcwidStore from '../../ecwid/storefront/EcwidStore';
 import './Checkout.css';
 
+const parseOrderFromUrl = (contextEmail = '', customerEmail = '') => {
+  if (typeof window === 'undefined') return null;
+  const hash = window.location.hash || '';
+  const href = window.location.href || '';
+  const search = window.location.search || '';
+
+  if (hash.includes('orderConfirmation') || href.includes('orderConfirmation') || search.includes('orderConfirmation')) {
+    const match = href.match(/orderNumber(?:%253D|%3D|=)([^&%#/]+)/i)
+      || hash.match(/orderNumber(?:%253D|%3D|=)([^&%#/]+)/i)
+      || search.match(/orderNumber=([^&]+)/i)
+      || href.match(/orderId(?:%253D|%3D|=)([^&%#/]+)/i)
+      || hash.match(/orderId(?:%253D|%3D|=)([^&%#/]+)/i);
+
+    const orderNumber = match ? decodeURIComponent(match[1]) : '';
+
+    // Check if rich order details were cached in sessionStorage during placement
+    try {
+      const saved = sessionStorage.getItem('earthlife_last_placed_order');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (!orderNumber || String(parsed.orderId) === String(orderNumber) || String(parsed.id) === String(orderNumber)) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read cached order from sessionStorage:', e);
+    }
+
+    return {
+      orderId: orderNumber || 'CONFIRMED',
+      id: orderNumber || 'CONFIRMED',
+      email: customerEmail || contextEmail || '',
+      total: 0,
+      subtotal: 0,
+      shipping: 0,
+      tax: 0,
+      paymentMethod: 'Online Payment (Razorpay)',
+      paymentStatus: 'PAID',
+      shippingAddress: null,
+      items: [],
+      date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+  }
+  return null;
+};
+
 const Checkout = () => {
   const {
     cartTotals,
@@ -21,36 +67,37 @@ const Checkout = () => {
 
   const { customer, isLoggedIn } = useEcwidAccount();
 
-  // Current checkout step: 2 = Ecwid Native Cart/Checkout Journey, 3 = Order Placed
-  const [currentStep, setCurrentStep] = useState(2);
-  const [completedOrder, setCompletedOrder] = useState(null);
+  // Initialize with URL state so page reload / gateway redirect renders Step 3 on initial frame
+  const initialOrder = parseOrderFromUrl(contextEmail, customer?.email);
+  const [currentStep, setCurrentStep] = useState(() => (initialOrder ? 3 : 2));
+  const [completedOrder, setCompletedOrder] = useState(() => initialOrder);
 
   const formatPrice = (val) => {
     const num = Number(val) || 0;
     return `₹${num.toLocaleString('en-IN')}`;
   };
 
-  // Listen for official Ecwid native order completion (fires ONLY after successful native payment via Razorpay / Ecwid)
+  // Listen for both in-page Ecwid order placement (COD / modal) and page-load transitions (Razorpay redirect)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let isSubscribed = true;
+    let isMounted = true;
 
-    const onOrderPlacedListener = async (order) => {
-      if (!isSubscribed || !order || typeof order !== 'object') return;
-      console.log('Real Ecwid Order Placed event received:', order);
+    const handleOrderData = (order) => {
+      if (!isMounted || !order || typeof order !== 'object') return;
+      console.log('Ecwid Order Placed event received:', order);
 
       const orderSummaryRecord = {
-        orderId: order?.orderNumber || order?.id || order?.referenceTransactionId || 'ORD-ECWID',
+        orderId: String(order?.orderNumber || order?.id || order?.referenceTransactionId || 'ORD-ECWID'),
         id: order?.id || order?.orderNumber,
-        email: order?.email || customer?.email || contextEmail || '',
-        total: order?.total || cartTotals?.total || cartTotals?.subtotal,
-        subtotal: order?.subtotal || cartTotals?.subtotal,
-        shipping: order?.shippingPerson?.shippingMethod || cartTotals?.shipping || 0,
-        tax: order?.tax || cartTotals?.tax || 0,
-        paymentMethod: order?.paymentMethod || 'Razorpay / Online Payment',
+        email: order?.email || order?.customerEmail || customer?.email || contextEmail || '',
+        total: order?.total ?? cartTotals?.total ?? cartTotals?.subtotal ?? 0,
+        subtotal: order?.subtotal ?? cartTotals?.subtotal ?? 0,
+        shipping: order?.shippingPerson?.shippingMethod || order?.shippingOption?.shippingMethodName || cartTotals?.shipping || 0,
+        tax: order?.tax ?? cartTotals?.tax ?? 0,
+        paymentMethod: order?.paymentMethod || (order?.paymentStatus === 'AWAITING_PAYMENT' ? 'Cash on Delivery' : 'Razorpay / Online Payment'),
         paymentStatus: order?.paymentStatus || 'PAID',
-        shippingAddress: order?.shippingPerson || null,
+        shippingAddress: order?.shippingPerson || order?.billingPerson || null,
         items: Array.isArray(order?.items) && order.items.length > 0
           ? order.items.map((it) => ({
               id: it?.id,
@@ -63,43 +110,91 @@ const Checkout = () => {
         date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
       };
 
-      setCompletedOrder(orderSummaryRecord);
+      try {
+        sessionStorage.setItem('earthlife_last_placed_order', JSON.stringify(orderSummaryRecord));
+      } catch (err) {
+        console.warn('Could not cache order in sessionStorage:', err);
+      }
 
-      // Clear cart once Ecwid confirms the order
-      await clearCart();
+      setCompletedOrder(orderSummaryRecord);
       setCurrentStep(3);
+
+      // Do NOT invoke window.Ecwid.Cart.clear() - Ecwid already cleared the cart.
+      // Calling clearCart(false) simply resets the React local badge count.
+      clearCart(false);
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const attachListener = () => {
-      if (window.Ecwid && window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
-        try {
-          window.Ecwid.OnOrderPlaced.add(onOrderPlacedListener);
-        } catch (e) {
-          console.warn('Could not attach OnOrderPlaced listener:', e);
-        }
+    const checkHashAndPage = () => {
+      if (!isMounted) return;
+      const detected = parseOrderFromUrl(contextEmail, customer?.email);
+      if (detected) {
+        setCompletedOrder(detected);
+        setCurrentStep(3);
+        clearCart(false);
       }
     };
 
-    if (window.Ecwid && window.Ecwid.OnOrderPlaced) {
-      attachListener();
-    } else {
-      const timer = setInterval(() => {
-        if (window.Ecwid && window.Ecwid.OnOrderPlaced) {
-          clearInterval(timer);
-          attachListener();
+    // If initial check found an order on mount, reset local cart badge safely
+    if (initialOrder) {
+      clearCart(false);
+    }
+
+    window.addEventListener('hashchange', checkHashAndPage);
+
+    // Attach Ecwid Storefront SDK listeners
+    const attachEcwidListeners = () => {
+      if (!window.Ecwid) return false;
+
+      // 1. OnOrderPlaced (COD / in-page payment completion)
+      if (window.Ecwid.OnOrderPlaced && typeof window.Ecwid.OnOrderPlaced.add === 'function') {
+        try {
+          window.Ecwid.OnOrderPlaced.add(handleOrderData);
+        } catch (e) {
+          console.warn('Error attaching OnOrderPlaced:', e);
         }
-      }, 500);
+      }
+
+      // 2. OnPageLoaded (catches ORDER_CONFIRMATION page transition, e.g. after Razorpay redirect)
+      if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.add === 'function') {
+        try {
+          window.Ecwid.OnPageLoaded.add((page) => {
+            if (!isMounted) return;
+            if (page && (page.type === 'ORDER_CONFIRMATION' || page.name === 'orderConfirmation')) {
+              checkHashAndPage();
+            }
+          });
+        } catch (e) {
+          console.warn('Error attaching OnPageLoaded:', e);
+        }
+      }
+
+      return true;
+    };
+
+    if (!attachEcwidListeners()) {
+      const pollTimer = setInterval(() => {
+        if (attachEcwidListeners()) {
+          clearInterval(pollTimer);
+        }
+      }, 300);
+
+      const timeoutTimer = setTimeout(() => clearInterval(pollTimer), 10000);
+
       return () => {
-        isSubscribed = false;
-        clearInterval(timer);
+        isMounted = false;
+        clearInterval(pollTimer);
+        clearTimeout(timeoutTimer);
+        window.removeEventListener('hashchange', checkHashAndPage);
       };
     }
 
     return () => {
-      isSubscribed = false;
+      isMounted = false;
+      window.removeEventListener('hashchange', checkHashAndPage);
     };
-  }, [cartTotals, clearCart, customer, contextEmail]);
+  }, [clearCart, contextEmail, customer?.email, cartTotals, initialOrder]);
 
   return (
     <div className="checkout-page" id="earthlife-checkout-page">
@@ -204,11 +299,35 @@ const Checkout = () => {
             </div>
 
             <div className="checkout-order-placed-actions">
-              <Link to="/store" className="checkout-order-placed-primary-btn" id="continue-shopping-btn">
+              <Link 
+                to="/store" 
+                className="checkout-order-placed-primary-btn" 
+                id="continue-shopping-btn"
+                onClick={() => {
+                  try {
+                    sessionStorage.removeItem('earthlife_last_placed_order');
+                    if (window.location.hash.includes('orderConfirmation')) {
+                      window.location.hash = '';
+                    }
+                  } catch {}
+                }}
+              >
                 <span>Continue Shopping</span>
                 <ArrowRight size={18} />
               </Link>
-              <Link to="/" className="checkout-order-placed-sec-btn" id="back-to-home-btn">
+              <Link 
+                to="/" 
+                className="checkout-order-placed-sec-btn" 
+                id="back-to-home-btn"
+                onClick={() => {
+                  try {
+                    sessionStorage.removeItem('earthlife_last_placed_order');
+                    if (window.location.hash.includes('orderConfirmation')) {
+                      window.location.hash = '';
+                    }
+                  } catch {}
+                }}
+              >
                 <span>Return to Home</span>
               </Link>
             </div>

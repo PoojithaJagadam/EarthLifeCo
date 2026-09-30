@@ -12,7 +12,7 @@ const SUPPORT_PATHS = ['/faqs', '/contact', '/cancellation-request'];
 
 const Header = () => {
   const { cartCount } = useCart();
-  const { isLoggedIn, customer, isLoading } = useEcwidAccount();
+  const { isLoggedIn, customer } = useEcwidAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
@@ -171,7 +171,7 @@ const Header = () => {
             {isLoggedIn && <span className="account-logged-in-indicator" />}
           </Link>
           <Link 
-            to={!isLoading && !isLoggedIn ? "/account?redirect=cart" : "/checkout#!/~/cart"} 
+            to="/checkout#!/~/cart" 
             className="icon-btn cart-btn" 
             aria-label="Cart" 
             id="header-cart-btn" 
@@ -309,7 +309,7 @@ const Header = () => {
                 <span>{isLoggedIn ? (customer?.name?.split(' ')[0] || 'Account') : 'Account'}</span>
               </Link>
               <Link 
-                to={!isLoading && !isLoggedIn ? "/account?redirect=cart" : "/checkout#!/~/cart"} 
+                to="/checkout#!/~/cart" 
                 className="mobile-shortcut-btn" 
                 onClick={() => setIsMenuOpen(false)}
               >
