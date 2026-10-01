@@ -171,7 +171,7 @@ const Header = () => {
             {isLoggedIn && <span className="account-logged-in-indicator" />}
           </Link>
           <Link 
-            to="/checkout#!/~/cart" 
+            to={isLoggedIn ? "/checkout#!/~/cart" : "/account?redirect=cart"} 
             className="icon-btn cart-btn" 
             aria-label="Cart" 
             id="header-cart-btn" 
@@ -309,7 +309,7 @@ const Header = () => {
                 <span>{isLoggedIn ? (customer?.name?.split(' ')[0] || 'Account') : 'Account'}</span>
               </Link>
               <Link 
-                to="/checkout#!/~/cart" 
+                to={isLoggedIn ? "/checkout#!/~/cart" : "/account?redirect=cart"} 
                 className="mobile-shortcut-btn" 
                 onClick={() => setIsMenuOpen(false)}
               >

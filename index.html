@@ -8,7 +8,7 @@
     <meta name="description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
     <meta property="og:title" content="EarthLife Co." />
     <meta property="og:description" content="Natural everyday essentials crafted from Neem wood, bamboo, and coconut coir." />
-    <!-- Suppress benign ResizeObserver notifications and Ecwid storefront third-party lifecycle rejections -->
+    <!-- Suppress benign ResizeObserver notifications -->
     <script>
       (function() {
         const isBenignThirdPartyError = (msg) => {
@@ -16,9 +16,7 @@
           const str = typeof msg === 'string' ? msg : (msg.message || String(msg));
           return (
             str.includes('ResizeObserver loop completed with undelivered notifications') ||
-            str.includes('ResizeObserver loop limit exceeded') ||
-            str.includes("Cannot read properties of null (reading 'shippingPerson')") ||
-            (str.includes('shippingPerson') && str.includes('null'))
+            str.includes('ResizeObserver loop limit exceeded')
           );
         };
 

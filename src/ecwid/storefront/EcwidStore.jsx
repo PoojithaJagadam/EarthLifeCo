@@ -3,6 +3,8 @@ import React, { useEffect, useRef } from 'react';
 const EcwidStore = ({ defaultPage, className = '', placeholderText }) => {
   const storeId = import.meta.env.VITE_ECWID_STORE_ID || '141633269';
   const storeDiv = useRef(null);
+  const lastNavigatedPageRef = useRef(null);
+  const browserInitializedRef = useRef(false);
 
   const defaultPlaceholder = defaultPage?.startsWith('checkout')
     ? 'Loading Ecwid Secure Checkout...'
@@ -10,12 +12,14 @@ const EcwidStore = ({ defaultPage, className = '', placeholderText }) => {
   const displayPlaceholder = placeholderText || defaultPlaceholder;
 
   useEffect(() => {
-    let hasNavigated = false;
+    let isMounted = true;
 
     const navigateToDefault = () => {
-      if (hasNavigated) return;
-      if (defaultPage && window.Ecwid && typeof window.Ecwid.openPage === 'function') {
-        hasNavigated = true;
+      if (!isMounted || !defaultPage) return;
+      if (lastNavigatedPageRef.current === defaultPage) return;
+
+      if (window.Ecwid && typeof window.Ecwid.openPage === 'function') {
+        lastNavigatedPageRef.current = defaultPage;
         try {
           window.Ecwid.openPage(defaultPage);
         } catch (e) {
@@ -25,7 +29,10 @@ const EcwidStore = ({ defaultPage, className = '', placeholderText }) => {
     };
 
     const initStore = () => {
-      if (window.xProductBrowser) {
+      if (!isMounted) return;
+
+      if (window.xProductBrowser && !browserInitializedRef.current) {
+        browserInitializedRef.current = true;
         window.xProductBrowser("id=my-store-" + storeId);
       }
 
@@ -50,11 +57,22 @@ const EcwidStore = ({ defaultPage, className = '', placeholderText }) => {
       document.head.appendChild(script);
       
       script.onload = () => {
-        initStore();
+        if (isMounted) initStore();
       };
     } else {
       initStore();
     }
+
+    return () => {
+      isMounted = false;
+      if (window.Ecwid?.OnAPILoaded?.remove) {
+        try {
+          window.Ecwid.OnAPILoaded.remove(navigateToDefault);
+        } catch {
+          // ignore
+        }
+      }
+    };
   }, [storeId, defaultPage]);
 
   return (

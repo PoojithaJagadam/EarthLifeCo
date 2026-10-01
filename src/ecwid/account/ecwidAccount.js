@@ -99,97 +99,136 @@ export function normalizeCustomerData(raw) {
   };
 }
 
-/**
- * Listens for Ecwid customer profile changes, sign-in, and sign-out events
- */
-export function subscribeToEcwidCustomer(callback) {
-  if (typeof window === 'undefined') return () => {};
+// Module-level state for managing Ecwid customer session listeners safely and without duplication
+const customerSubscribers = new Set();
+let globalEcwidListenersAttached = false;
+let globalCheckInterval = null;
+let lastKnownCustomerEmail = undefined;
 
-  let lastEmail = undefined;
-
-  const checkAndUpdate = () => {
-    const current = getCurrentEcwidCustomer();
-    const currentEmail = current ? (current.email || current.id) : null;
-    if (currentEmail !== lastEmail) {
-      lastEmail = currentEmail;
-      callback(current);
-    }
-  };
-
-  const listenerHandler = () => {
-    checkAndUpdate();
-  };
-
-  let listenersRegistered = false;
-
-  const registerListeners = () => {
-    if (listenersRegistered || !window.Ecwid) return;
-    listenersRegistered = true;
-
+function notifyCustomerSubscribers(customer) {
+  customerSubscribers.forEach((cb) => {
     try {
-      if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.add === 'function') {
-        window.Ecwid.OnSetProfile.add(listenerHandler);
-      }
+      cb(customer);
     } catch (e) {
-      console.warn('Error attaching OnSetProfile:', e);
+      console.warn('Error in customer subscriber callback:', e);
     }
+  });
+}
 
-    try {
-      if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.add === 'function') {
-        window.Ecwid.OnPageLoaded.add(listenerHandler);
-      }
-    } catch (e) {
-      console.warn('Error attaching OnPageLoaded:', e);
+function checkAndUpdateCustomer() {
+  const current = getCurrentEcwidCustomer();
+  const currentEmail = current ? (current.email || current.id) : null;
+  if (currentEmail !== lastKnownCustomerEmail) {
+    lastKnownCustomerEmail = currentEmail;
+    notifyCustomerSubscribers(current);
+  }
+}
+
+const globalCustomerListener = () => {
+  checkAndUpdateCustomer();
+};
+
+function attachGlobalEcwidListeners() {
+  if (globalEcwidListenersAttached || typeof window === 'undefined' || !window.Ecwid) return;
+  globalEcwidListenersAttached = true;
+
+  try {
+    if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.add === 'function') {
+      window.Ecwid.OnSetProfile.add(globalCustomerListener);
     }
-
-    try {
-      if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.add === 'function') {
-        window.Ecwid.OnAPILoaded.add(listenerHandler);
-      }
-    } catch (e) {
-      console.warn('Error attaching OnAPILoaded:', e);
-    }
-  };
-
-  if (window.Ecwid) {
-    registerListeners();
+  } catch (e) {
+    console.warn('Error attaching OnSetProfile:', e);
   }
 
-  // Active check interval for smooth detection of session establishment without repeating listener registrations
-  const interval = setInterval(() => {
-    if (!listenersRegistered && window.Ecwid) {
-      registerListeners();
+  try {
+    if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.add === 'function') {
+      window.Ecwid.OnPageLoaded.add(globalCustomerListener);
     }
-    checkAndUpdate();
-  }, 1000);
+  } catch (e) {
+    console.warn('Error attaching OnPageLoaded:', e);
+  }
 
-  // Initial check
-  checkAndUpdate();
+  try {
+    if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.add === 'function') {
+      window.Ecwid.OnAPILoaded.add(globalCustomerListener);
+    }
+  } catch (e) {
+    console.warn('Error attaching OnAPILoaded:', e);
+  }
+}
+
+function detachGlobalEcwidListeners() {
+  if (!globalEcwidListenersAttached || typeof window === 'undefined' || !window.Ecwid) return;
+
+  try {
+    if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.remove === 'function') {
+      window.Ecwid.OnSetProfile.remove(globalCustomerListener);
+    }
+  } catch {
+    // Ignore unregister errors if not supported by storefront SDK
+  }
+  try {
+    if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.remove === 'function') {
+      window.Ecwid.OnPageLoaded.remove(globalCustomerListener);
+    }
+  } catch {
+    // Ignore unregister errors if not supported by storefront SDK
+  }
+  try {
+    if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.remove === 'function') {
+      window.Ecwid.OnAPILoaded.remove(globalCustomerListener);
+    }
+  } catch {
+    // Ignore unregister errors if not supported by storefront SDK
+  }
+
+  globalEcwidListenersAttached = false;
+}
+
+/**
+ * Listens for Ecwid customer profile changes, sign-in, and sign-out events.
+ * Manages listeners globally to prevent duplicate registrations and ensures clean teardown.
+ */
+export function subscribeToEcwidCustomer(callback) {
+  if (typeof window === 'undefined' || typeof callback !== 'function') return () => {};
+
+  customerSubscribers.add(callback);
+
+  // If this is the first subscriber, attach listeners and start poll interval
+  if (customerSubscribers.size === 1) {
+    if (window.Ecwid) {
+      attachGlobalEcwidListeners();
+    }
+
+    if (!globalCheckInterval) {
+      globalCheckInterval = setInterval(() => {
+        if (!globalEcwidListenersAttached && window.Ecwid) {
+          attachGlobalEcwidListeners();
+        }
+        checkAndUpdateCustomer();
+      }, 1000);
+    }
+  }
+
+  // Provide initial customer value immediately to the new subscriber
+  const current = getCurrentEcwidCustomer();
+  try {
+    callback(current);
+  } catch (e) {
+    console.warn('Error providing initial customer data:', e);
+  }
 
   return () => {
-    clearInterval(interval);
-    if (listenersRegistered && window.Ecwid) {
-      try {
-        if (window.Ecwid.OnSetProfile && typeof window.Ecwid.OnSetProfile.remove === 'function') {
-          window.Ecwid.OnSetProfile.remove(listenerHandler);
-        }
-      } catch {
-        // Ignore unregister errors if not supported by storefront SDK
+    customerSubscribers.delete(callback);
+
+    // If no more active subscribers, tear down listeners and interval
+    if (customerSubscribers.size === 0) {
+      if (globalCheckInterval) {
+        clearInterval(globalCheckInterval);
+        globalCheckInterval = null;
       }
-      try {
-        if (window.Ecwid.OnPageLoaded && typeof window.Ecwid.OnPageLoaded.remove === 'function') {
-          window.Ecwid.OnPageLoaded.remove(listenerHandler);
-        }
-      } catch {
-        // Ignore unregister errors if not supported by storefront SDK
-      }
-      try {
-        if (window.Ecwid.OnAPILoaded && typeof window.Ecwid.OnAPILoaded.remove === 'function') {
-          window.Ecwid.OnAPILoaded.remove(listenerHandler);
-        }
-      } catch {
-        // Ignore unregister errors if not supported by storefront SDK
-      }
+      detachGlobalEcwidListeners();
+      lastKnownCustomerEmail = undefined;
     }
   };
 }
@@ -251,6 +290,9 @@ export function signoutEcwidCustomer(callback) {
   } catch {
     // ignore
   }
+
+  lastKnownCustomerEmail = null;
+  notifyCustomerSubscribers(null);
 
   // Redirect to signin view in Ecwid
   openEcwidAccountPage('signin');

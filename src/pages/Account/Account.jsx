@@ -497,7 +497,7 @@ const Account = () => {
                 </p>
               </div>
 
-              {isFromCheckout && cartCount > 0 && !orderConfirmationInfo.isConfirmed && (
+              {(isFromCheckout || isFromCart) && cartCount > 0 && !orderConfirmationInfo.isConfirmed && (
                 <div style={{
                   backgroundColor: '#EAF0EC',
                   border: '1px solid #C4D9CC',
@@ -514,7 +514,7 @@ const Account = () => {
                     <ShoppingCart size={22} style={{ color: '#1E3A2B', flexShrink: 0 }} />
                     <div>
                       <strong style={{ display: 'block', color: '#1E3A2B', fontSize: '0.96rem' }}>
-                        Checkout in Progress ({cartCount} {cartCount === 1 ? 'item' : 'items'})
+                        {isFromCart ? 'Cart in Progress' : 'Checkout in Progress'} ({cartCount} {cartCount === 1 ? 'item' : 'items'})
                       </strong>
                       <span style={{ fontSize: '0.86rem', color: '#4B6354' }}>
                         Sign in with your email below. Once verified with your access code, your Native Ecwid Shopping Cart will open automatically.
@@ -537,7 +537,7 @@ const Account = () => {
                       gap: '0.35rem'
                     }}
                   >
-                    <span>Return to Shipping</span>
+                    <span>Return to Checkout</span>
                     <ArrowRight size={14} />
                   </Link>
                 </div>

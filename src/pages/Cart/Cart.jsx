@@ -1,15 +1,24 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEcwidAccount } from '../../hooks/useEcwidAccount';
 
 /**
- * /cart route: Safely directs customer to Ecwid shopping cart on /checkout#!/~/cart
+ * /cart route: Directs customer to Ecwid shopping cart on /checkout#!/~/cart for logged-in users,
+ * or /account?redirect=cart for logged-out users to sign in first.
  */
 const Cart = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, isLoading } = useEcwidAccount();
 
   useEffect(() => {
-    navigate('/checkout#!/~/cart', { replace: true });
-  }, [navigate]);
+    if (!isLoading) {
+      if (isLoggedIn) {
+        navigate('/checkout#!/~/cart', { replace: true });
+      } else {
+        navigate('/account?redirect=cart', { replace: true });
+      }
+    }
+  }, [isLoggedIn, isLoading, navigate]);
 
   return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FBF9F5' }}>
