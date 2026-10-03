@@ -281,7 +281,7 @@ const Home = () => {
           <div className="proof-item">
             <span className="proof-icon" aria-hidden="true"><Truck size={22} strokeWidth={1.8} /></span>
             <div className="proof-content">
-              <span className="proof-stat">200+</span>
+              <span className="proof-stat">450+</span>
               <span className="proof-label">Orders Delivered</span>
             </div>
           </div>

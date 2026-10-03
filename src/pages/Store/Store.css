@@ -565,15 +565,14 @@
     display: block;
     width: 100%;
     height: auto;
-    max-height: 320px;
     object-fit: contain;
     border-radius: 12px;
   }
   .store-handwritten-badge {
     position: absolute;
-    top: 1rem;
-    right: 1.25rem;
-    font-size: 1.85rem;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 1.35rem;
     padding-right: 0;
   }
   .store-product-grid {
@@ -605,6 +604,20 @@
 }
 
 @media (max-width: 768px) {
+  .store-hero-leaf-topleft {
+    width: 120px;
+    opacity: 0.5;
+  }
+  .store-handwritten-badge {
+    position: static;
+    transform: none;
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 1.35rem;
+  }
   .store-hero-banner {
     padding: 2.25rem 0 2.5rem;
   }

@@ -50,7 +50,7 @@ const FAQ_DATA = [
   {
     icon: <Package size={22} className="faq-type-icon" />,
     question: 'What is your return policy?',
-    answer: 'We offer hassle-free returns within 7 days of delivery for a worry-free shopping experience.'
+    answer: 'We offer hassle-free returns within 7 days of delivery for a worry-free shopping experience. For a return request, please contact us through the Return Request option in the Support section.'
   },
   {
     icon: <CreditCard size={22} className="faq-type-icon" />,
@@ -60,7 +60,7 @@ const FAQ_DATA = [
   {
     icon: <MapPin size={22} className="faq-type-icon" />,
     question: 'How can I track my order?',
-    answer: 'Once your order is shipped, you will receive a tracking link via email. You can also track it in the "Track Order" section of your account.'
+    answer: 'You will receive email notifications with order tracking updates after every step of your order.'
   },
   {
     icon: <FileText size={22} className="faq-type-icon" />,

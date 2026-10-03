@@ -938,7 +938,7 @@
   .hero-products-responsive-img {
     display: block !important;
     width: 100%;
-    max-height: 340px;
+    height: auto;
     object-fit: contain;
     border-radius: 10px;
   }
@@ -1052,7 +1052,6 @@
     display: block !important;
     width: 100%;
     height: auto;
-    max-height: 240px;
     object-fit: contain;
     border-radius: 10px;
   }

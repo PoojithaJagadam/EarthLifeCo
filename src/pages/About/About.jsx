@@ -239,7 +239,7 @@ const About = () => {
                   <ShoppingBag size={24} color="#D97706" />
                 </div>
                 <div className="orders-info">
-                  <div className="orders-count">200+</div>
+                  <div className="orders-count">450+</div>
                   <div className="orders-label">Orders Delivered</div>
                 </div>
               </div>
