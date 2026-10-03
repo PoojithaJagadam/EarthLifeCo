@@ -469,14 +469,14 @@
     display: block;
     width: 100%;
     height: auto;
+    max-height: 320px;
     object-fit: contain;
     border-radius: 12px;
   }
   .why-hero-cursive-badge {
     position: absolute;
-    top: 0.5rem;
-    right: 0.75rem;
-    font-size: 1.35rem;
+    top: 1rem;
+    right: 1.25rem;
     padding-right: 0;
   }
   
@@ -487,9 +487,8 @@
 }
 
 @media (max-width: 768px) {
-  .why-hero-leaf-topleft {
-    width: 120px;
-    opacity: 0.5;
+  .why-hero-section {
+    background-position: 70% center;
   }
 
   .why-hero-grid,
@@ -529,13 +528,55 @@
     position: static;
     transform: none;
     margin-top: 0.75rem;
-    justify-content: center;
-    font-size: 1.4rem;
   }
 
   .why-mv-card {
     flex-direction: column;
     padding: 2rem 1.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile-Only Hero Reordering (<= 767px)
+   Desired order: Heading -> Description -> Hero Image -> Shop Button -> Content
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .why-hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .why-hero-text {
+    display: contents;
+  }
+
+  .why-hero-breadcrumb {
+    order: 1;
+  }
+
+  .why-hero-title {
+    order: 2;
+  }
+
+  .why-hero-subtitle {
+    order: 3;
+  }
+
+  .why-hero-desc {
+    order: 4;
+    margin-bottom: 1.5rem;
+  }
+
+  .why-hero-badge-col {
+    order: 5;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .why-hero-btn-wrap {
+    order: 6;
+    margin-top: 0;
   }
 }
 

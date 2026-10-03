@@ -938,7 +938,7 @@
   .hero-products-responsive-img {
     display: block !important;
     width: 100%;
-    height: auto;
+    max-height: 340px;
     object-fit: contain;
     border-radius: 10px;
   }
@@ -997,43 +997,37 @@
     opacity: 0.5;
   }
   .hero-grid-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     padding: 0 1.25rem;
   }
   .hero-content {
-    max-width: 100%;
-    order: 1;
+    display: contents;
   }
   .hero-eyebrow {
+    order: 1;
     font-size: 0.78rem;
     margin-bottom: 0.5rem;
   }
   .hero-headline {
+    order: 2;
     font-size: clamp(2rem, 7.8vw, 2.6rem);
     line-height: 1.08;
     margin-bottom: 0.85rem;
   }
   .hero-desc {
+    order: 3;
     font-size: 0.95rem;
     line-height: 1.55;
     margin-bottom: 1.25rem;
   }
-  .hero-cta-wrap {
-    margin-bottom: 1.25rem;
-  }
-  .hero-primary-cta {
-    width: 100%;
-    justify-content: center;
-    padding: 0.85rem 1.5rem;
-    font-size: 0.98rem;
-  }
   
-  /* Dedicated, cleanly framed product visual between CTA and benefits */
+  /* Dedicated, cleanly framed product visual between description and CTA on mobile */
   .hero-visual-stage {
-    order: 2;
+    order: 4;
     min-height: auto;
-    margin: 0.25rem 0 0.75rem;
+    margin: 0.25rem 0 1.25rem;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -1052,6 +1046,7 @@
     display: block !important;
     width: 100%;
     height: auto;
+    max-height: 240px;
     object-fit: contain;
     border-radius: 10px;
   }
@@ -1061,8 +1056,20 @@
     font-size: 1.35rem;
   }
 
+  .hero-cta-wrap {
+    order: 5;
+    margin-bottom: 1.25rem;
+    width: 100%;
+  }
+  .hero-primary-cta {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.98rem;
+  }
+
   .hero-benefits {
-    order: 3;
+    order: 6;
     grid-template-columns: 1fr;
     gap: 0.85rem;
     padding-top: 1.25rem;
@@ -1118,6 +1125,9 @@
     align-items: flex-start;
     gap: 0.75rem;
   }
+  .bestsellers-view-all {
+    align-self: flex-end;
+  }
   .products-showcase-grid {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -1130,10 +1140,103 @@
   .testimonials-header-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .view-more-about-btn {
+    align-self: flex-end;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.88rem;
+    gap: 0.35rem;
+  }
+  .testimonials-section div[style*="margin-top"] {
+    margin-top: 0.5rem !important;
   }
   .testimonial-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Simplify HelpfulCrowd pagination dots on mobile (reduce clutter to minimal indicator) */
+  .testimonials-section .hc-slider__pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 1.25rem !important;
+    padding: 0 !important;
+  }
+
+  .testimonials-section .hc-slider__pagination li {
+    display: none !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  /* Show active dot and up to 2 adjacent dots on either side (clean 3-5 dot window) */
+  .testimonials-section .hc-slider__pagination li:has(.is-active),
+  .testimonials-section .hc-slider__pagination li:has(.is-active) + li,
+  .testimonials-section .hc-slider__pagination li:has(.is-active) + li + li,
+  .testimonials-section .hc-slider__pagination li:has(+ li .is-active),
+  .testimonials-section .hc-slider__pagination li:has(+ li + li .is-active) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .testimonials-section .hc-slider__pagination__page {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #C8D4CC !important;
+    opacity: 0.6 !important;
+    transition: all 0.25s ease !important;
+    margin: 0 3px !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .testimonials-section .hc-slider__pagination__page.is-active {
+    background: #1E3A2B !important;
+    opacity: 1 !important;
+    width: 22px !important;
+    border-radius: 4px !important;
+    transform: none !important;
+  }
+
+  /* Outer adjacent dots slightly scaled down for smooth indicator feel */
+  .testimonials-section .hc-slider__pagination li:has(.is-active) + li + li .hc-slider__pagination__page,
+  .testimonials-section .hc-slider__pagination li:has(+ li + li .is-active) .hc-slider__pagination__page {
+    width: 6px !important;
+    height: 6px !important;
+    opacity: 0.35 !important;
+  }
+
+  /* Custom fallback dots support if active */
+  .testimonials-section .hc-pagination-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 1.25rem !important;
+  }
+
+  .testimonials-section .hc-pagination-dots .hc-dot {
+    display: none !important;
+    margin: 0 !important;
+  }
+
+  .testimonials-section .hc-pagination-dots .hc-dot.active,
+  .testimonials-section .hc-pagination-dots .hc-dot.active + .hc-dot,
+  .testimonials-section .hc-pagination-dots .hc-dot.active + .hc-dot + .hc-dot,
+  .testimonials-section .hc-pagination-dots .hc-dot:has(+ .hc-dot.active),
+  .testimonials-section .hc-pagination-dots .hc-dot:has(+ .hc-dot + .hc-dot.active) {
+    display: inline-block !important;
+  }
+
+  .testimonials-section .hc-pagination-dots .hc-dot.active {
+    width: 22px !important;
+    border-radius: 4px !important;
+    background-color: #1E3A2B !important;
   }
 
   /* CTA on Mobile */
